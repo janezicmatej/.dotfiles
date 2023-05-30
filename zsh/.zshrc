@@ -44,7 +44,7 @@ export LANG=en_US.UTF-8
 export PATH="/opt/homebrew/sbin:$PATH"
 
 # pyenv
-export PYENV_ROOT="$HOME/.pyenv"
+export PYENV_ROOT="$XDG_DATA_HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
@@ -63,20 +63,8 @@ eval "$(ggman shellrc)"
 # gpg
 export GPG_TTY=$(tty)
 
-# deno
-export DENO_INSTALL="/Users/janezicmatej/.deno"
-export PATH="$DENO_INSTALL/bin:$PATH"
-
-# dvm
-export DVM_DIR="/Users/janezicmatej/.dvm"
-export PATH="$DVM_DIR/bin:$PATH"
-
 # editor
 export EDITOR=nvim
-
-# gcloud sdk
-source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
-source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
 
 # custom functions and aliases
 source "$ZDOTDIR/aliases.zsh"
