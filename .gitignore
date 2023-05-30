@@ -1,0 +1,12 @@
+# ignore everything
+/*
+
+# allowed misc files
+!.gitmodules
+!.gitignore
+
+# allow some stuff to be pushed
+!tmux
+!git
+!alacritty
+!nvim
