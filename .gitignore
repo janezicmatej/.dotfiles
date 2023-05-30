@@ -4,6 +4,7 @@
 # allowed misc files
 !.gitmodules
 !.gitignore
+!README.md
 
 # allow some stuff to be pushed
 !tmux
