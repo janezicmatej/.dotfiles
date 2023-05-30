@@ -10,3 +10,7 @@
 !git
 !alacritty
 !nvim
+!zsh
+
+# explicity ignore zcoredump
+zsh/.zcomp*
