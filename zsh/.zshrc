@@ -53,11 +53,12 @@ eval "$(pyenv virtualenv-init -)"
 export PATH="$HOME/neovim/bin:$PATH"
 
 # go
-export GOHOME=$HOME/go
-export PATH=$PATH:$GOHOME/bin
+export GOHOME="$XDG_DATA_HOME/go"
+export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
+export PATH="$PATH:$GOHOME/bin"
 
 # ggman
-export GGROOT=/Users/janezicmatej/Desktop/git
+export GGROOT="$HOME/Desktop/git"
 eval "$(ggman shellrc)"
 
 # gpg
