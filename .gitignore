@@ -11,6 +11,7 @@
 !alacritty
 !nvim
 !zsh
+!.pyenv
 
 # explicity ignore zcoredump
 zsh/.zcomp*
