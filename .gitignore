@@ -16,3 +16,6 @@
 
 # explicity ignore zcoredump
 zsh/.zcomp*
+
+# explicity ignore tmux plugins
+tmux/plugins
