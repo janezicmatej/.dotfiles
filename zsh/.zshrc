@@ -11,33 +11,42 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# completion
+fpath=($ZDOTDIR/completions $fpath)
+autoload -Uz compinit
+compinit -d $XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION
+zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh/zcompcache
+
 # zsh history file 
 export HISTFILE="$XDG_STATE_HOME/zsh/history"
-
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
-
-# Set name of the theme to load
-ZSH_THEME="powerlevel10k/powerlevel10k"
-
-# just remind me to update when it's time
-zstyle ':omz:update' mode reminder  
-zstyle ':omz:update' frequency 7
 
 # pre plugin load
 export NVM_COMPLETION=true
 export NVM_AUTO_USE=true
-# i don't lazy load nvm because neovim doesn't work well with it
 
-# plugins
-plugins=(zsh-nvm git zsh-autosuggestions zsh-syntax-highlighting)
+# load antigen
+typeset -a ANTIGEN_CHECK_FILES=(${ZDOTDIR:-~}/.zshrc ${ZDOTDIR:-~}/antigen.zsh)
+source $ZDOTDIR/antigen.zsh
 
-# TODO: lose oh my zsh at some point
+# oh-my-zsh library and git plugin
+antigen use oh-my-zsh
+antigen bundle git
 
-# oh my zsh
-source $ZSH/oh-my-zsh.sh
+# zsh users plugin
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-autosuggestions
+antigen bundle zsh-users/zsh-completions
 
-# language environment
+# other
+antigen bundle lukechilds/zsh-nvm
+
+# theme
+antigen theme romkatv/powerlevel10k
+
+# apply plugin load
+antigen apply
+
+# # language environment
 export LANG=en_US.UTF-8
 
 # brew sbin
@@ -49,7 +58,11 @@ command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
-# # nvim
+# poetry
+export POETRY_HOME="$XDG_DATA_HOME/poetry"
+export PATH="/Users/janezicmatej/.local/share/poetry/bin:$PATH"
+
+# neovim
 export PATH="$HOME/neovim/bin:$PATH"
 
 # go
@@ -69,7 +82,7 @@ export EDITOR=nvim
 
 # custom functions and aliases
 source "$ZDOTDIR/aliases.zsh"
-source "$ZDOTDIR/functions.zsh"
+source "$ZDOTDIR/scripts.zsh"
 
 # opam configuration
 [[ ! -r /Users/janezicmatej/.opam/opam-init/init.zsh ]] || source /Users/janezicmatej/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null

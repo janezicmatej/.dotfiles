@@ -14,8 +14,10 @@
 !zsh
 !.pyenv
 
-# explicity ignore zcoredump
-zsh/.zcomp*
+# explicity ignore completions
+zsh/antigen.zsh
+zsh/completions/*
+!zsh/completions/.keep
 
 # explicity ignore tmux plugins
 tmux/plugins
