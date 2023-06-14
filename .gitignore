@@ -7,17 +7,23 @@
 !README.md
 
 # allow some stuff to be pushed
-!tmux
-!git
 !alacritty
 !nvim
-!zsh
 !.pyenv
 
-# explicity ignore completions
+# zsh
+!zsh
 zsh/antigen.zsh
 zsh/completions/*
 !zsh/completions/.keep
 
-# explicity ignore tmux plugins
+# tmux
+!tmux
 tmux/plugins
+
+# git
+!git
+git/*
+!git/config
+!git/gitignore
+!git/aflabs

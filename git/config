@@ -1,25 +1,16 @@
 [user]
 	name = Matej Janežič
 	email = janezic.mj@gmail.com
-	signingkey = 4298E230ED37B2C0
 [core]
 	autocrlf = input
 	excludesfile = ~/.config/git/gitignore
 	editor = nvim
-[includeIf "gitdir:~/Desktop/git/git.aflabs.org/"]
-	path = ~/.config/git/aflabs
-[commit]
-	gpgsign = true
-[gpg]
-	program = /opt/homebrew/bin/gpg
 [init]
 	defaultBranch = master
-[alias]
-	andraz = commit --amend --no-edit --author=\"Andraž Kladnik <andraz.kladnik@aflabs.si>\"
-	petra = commit --amend --no-edit --author=\"Petra Podlogar <petra.podlogar@aflabs.si>\"
-	ziga = commit --amend --no-edit --author=\"Žiga Avbreht <ziga.avbreht@aflabs.si>\"
-	laura = commit --amend --no-edit --author=\"lauraGB <laura.guzelj.blatnik@aflabs.si>\"
-	gasper = commit --amend --no-edit --author=\"Gašper Žajdela <gasper.zajdela@aflabs.si>\"
-	luka = commit --amend --no-edit --author=\"Luka Avbreht <luka.avbreht@aflabs.si>\"
-	koprivec = commit --amend --no-edit --author=\"Filip Koprivec <filip.koprivec@aflabs.si>\"
+[include]
+	path = ~/.config/git/alias
+[include]
+	path = ~/.config/git/commitsign
+[includeIf "gitdir:~/Desktop/git/git.aflabs.org/"]
+	path = ~/.config/git/aflabs
 
