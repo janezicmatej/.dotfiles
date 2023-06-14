@@ -6,6 +6,7 @@ export XDG_STATE_HOME="$HOME/.local/state"
 
 # brew sbin
 export PATH="/opt/homebrew/sbin:$PATH"
+
 # brew lib
 export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"
 
@@ -21,7 +22,10 @@ export EDITOR=nvim
 # go
 export GOHOME="$XDG_DATA_HOME/go"
 export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
-export PATH="$PATH:$GOHOME/bin"
+export PATH="$GOHOME/bin:$PATH"
+
+# ggman
+export GGROOT="$HOME/git"
 
 # neovim
 export PATH="$XDG_DATA_HOME/neovim/bin:$PATH"

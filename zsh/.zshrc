@@ -44,7 +44,6 @@ eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
 # ggman
-export GGROOT="$HOME/Desktop/git"
 eval "$(ggman shellrc)"
 
 # gpg
