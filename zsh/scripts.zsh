@@ -44,3 +44,39 @@ function nukepip {
   pip uninstall $(pip freeze) -y
   pip install -r $(pyenv root)/default-packages
 }
+
+function pyinit {
+  if [[ -f .python-version ]]; then 
+    echo "found .python-version, stopping"
+    return
+  fi
+
+  DIRNAME=$(basename "$PWD")
+
+  if [[ $(pyenv versions | grep "$DIRNAME") ]]; then
+    echo "found existing version with this name, setting..."
+    pyenv local "$DIRNAME"
+    return
+  fi
+
+  if [[ -z $1 ]]; then
+    echo "no python version provided, defaulting to $(pyenv version-name)"
+    VERSION=$(pyenv version-name)
+  else
+    VERSION=$1
+  fi
+
+  pyenv virtualenv "$VERSION" "$DIRNAME"
+  pyenv local "$DIRNAME"
+
+}
+
+function lh {
+  if [[ -z $1 ]]; then
+    PORT=8000
+  else
+    PORT=$1
+  fi
+
+  open "http://localhost:$PORT"
+}
