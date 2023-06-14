@@ -24,7 +24,7 @@ export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
 export PATH="$PATH:$GOHOME/bin"
 
 # neovim
-export PATH="$HOME/neovim/bin:$PATH"
+export PATH="$XDG_DATA_HOME/neovim/bin:$PATH"
 
 # pyenv
 export PYENV_ROOT="$XDG_DATA_HOME/.pyenv"
