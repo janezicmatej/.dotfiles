@@ -1,8 +1,5 @@
-# default configuration as per https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_CACHE_HOME="$HOME/.cache"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_STATE_HOME="$HOME/.local/state"
+# zsh history file 
+export HISTFILE="$XDG_STATE_HOME/zsh/history"
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.config/zsh/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -16,9 +13,6 @@ fpath=($ZDOTDIR/completions $fpath)
 autoload -Uz compinit
 compinit -d $XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION
 zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh/zcompcache
-
-# zsh history file 
-export HISTFILE="$XDG_STATE_HOME/zsh/history"
 
 # pre plugin load
 export NVM_COMPLETION=true
@@ -35,7 +29,6 @@ antigen bundle git
 # zsh users plugin
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-autosuggestions
-antigen bundle zsh-users/zsh-completions
 
 # other
 antigen bundle lukechilds/zsh-nvm
@@ -46,29 +39,9 @@ antigen theme romkatv/powerlevel10k
 # apply plugin load
 antigen apply
 
-# # language environment
-export LANG=en_US.UTF-8
-
-# brew sbin
-export PATH="/opt/homebrew/sbin:$PATH"
-
 # pyenv
-export PYENV_ROOT="$XDG_DATA_HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
-
-# poetry
-export POETRY_HOME="$XDG_DATA_HOME/poetry"
-export PATH="/Users/janezicmatej/.local/share/poetry/bin:$PATH"
-
-# neovim
-export PATH="$HOME/neovim/bin:$PATH"
-
-# go
-export GOHOME="$XDG_DATA_HOME/go"
-export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
-export PATH="$PATH:$GOHOME/bin"
 
 # ggman
 export GGROOT="$HOME/Desktop/git"
@@ -76,9 +49,6 @@ eval "$(ggman shellrc)"
 
 # gpg
 export GPG_TTY=$(tty)
-
-# editor
-export EDITOR=nvim
 
 # custom functions and aliases
 source "$ZDOTDIR/aliases.zsh"
