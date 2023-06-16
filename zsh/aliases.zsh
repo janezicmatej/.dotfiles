@@ -12,10 +12,9 @@ alias temp="cd $HOME/Desktop/temp"
 alias accenton="defaults write -g ApplePressAndHoldEnabled -bool true"
 alias accentoff="defaults write -g ApplePressAndHoldEnabled -bool false"
 
-# docker
-alias dps="docker ps --format table'{{ .ID }}\t{{ .Image }}\t{{ .Ports}}\t{{ .Names }}'"
-
+# git
 alias gros="git reset origin/$(git_current_branch) --soft"
+alias gcan="git commit -v --amend --no-edit"
 
 # unsorted
 alias ci="glab ci list"

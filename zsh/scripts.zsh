@@ -80,3 +80,12 @@ function lh {
 
   open "http://localhost:$PORT"
 }
+
+function dps {
+  if [[ -z $1 ]]; then
+    docker ps --format table'{{ .ID }}\t{{ .Image }}\t{{ .Ports}}\t{{ .Names }}'
+  else
+    docker ps --format table'{{ .ID }}\t{{ .Image }}\t{{ .Ports}}\t{{ .Names }}' | grep $1
+  fi
+}
+
