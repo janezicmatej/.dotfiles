@@ -13,13 +13,19 @@
 
 # zsh
 !zsh
-zsh/antigen.zsh
-zsh/completions/*
+zsh/*
+!zsh/.zshrc
+!zsh/.zshenv
+!zsh/.zprofile
+!zsh/scripts.zsh
+!zsh/aliases.zsh
 !zsh/completions/.keep
 
 # tmux
 !tmux
-tmux/plugins
+tmux/*
+!tmux/tmux.conf
+!tmux/tmux-sessionizer
 
 # git
 !git
