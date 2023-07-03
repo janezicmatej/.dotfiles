@@ -20,9 +20,9 @@ export LANG=en_US.UTF-8
 export EDITOR=nvim
 
 # go
-export GOHOME="$XDG_DATA_HOME/go"
+export GOPATH="$XDG_DATA_HOME/go"
 export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
-export PATH="$GOHOME/bin:$PATH"
+export PATH="$GOPATH/bin:$PATH"
 
 # ggman
 export GGROOT="$HOME/git"
