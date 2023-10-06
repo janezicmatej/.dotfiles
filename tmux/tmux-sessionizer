@@ -3,7 +3,10 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(find -L $GGROOT -mindepth 1 -maxdepth 5 -type d -name .git  -prune | xargs -n 1 dirname | fzf --cycle --multi --bind 'tab:toggle-up,btab:toggle-down')
+    if ! [[ -f "$GGROOT/compiled" ]]; then
+        find -L $GGROOT -mindepth 1 -maxdepth 5 -type d -name .git  -prune | xargs -n 1 dirname > "$GGROOT/compiled"
+    fi
+    selected=$(cat "$GGROOT/compiled" | fzf)
 fi
 
 if [[ -z $selected ]]; then
