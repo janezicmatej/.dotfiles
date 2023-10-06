@@ -9,15 +9,8 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# completion
-fpath=($ZDOTDIR/completions $fpath)
-autoload -Uz compinit
-compinit -d $XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION
-zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh/zcompcache
-
 # pre plugin load
 export NVM_COMPLETION=true
-export NVM_AUTO_USE=true
 
 # load antigen
 typeset -a ANTIGEN_CHECK_FILES=(${ZDOTDIR:-~}/.zshrc ${ZDOTDIR:-~}/antigen.zsh)
@@ -28,7 +21,6 @@ antigen use oh-my-zsh
 antigen bundle git
 
 # zsh users plugin
-antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-autosuggestions
 
 # other
@@ -54,8 +46,14 @@ export GPG_TTY=$(tty)
 source "$ZDOTDIR/aliases.zsh"
 source "$ZDOTDIR/scripts.zsh"
 
+# completion
+fpath=($ZDOTDIR/completions $fpath)
+autoload -Uz compinit
+compinit -d $XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION
+zstyle ':completion:*' cache-path $XDG_CACHE_HOME/zsh/zcompcache
+
 # opam configuration
-[[ ! -r /Users/janezicmatej/.opam/opam-init/init.zsh ]] || source /Users/janezicmatej/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+# [[ ! -r /Users/janezicmatej/.opam/opam-init/init.zsh ]] || source /Users/janezicmatej/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
 
 # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
 [[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

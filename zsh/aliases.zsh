@@ -1,7 +1,8 @@
+alias s="ssh"
 alias z="exec zsh"
 alias t="tmux a || tmux new-session -s janezicmatej -c ~"
 alias n=nvim_ve
-alias vim=nvim_ve
+# alias vim=nvim_ve
 
 # navigation
 alias cdgit="cd $GGROOT"

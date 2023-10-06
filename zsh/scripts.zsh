@@ -89,3 +89,37 @@ function dps {
   fi
 }
 
+
+function get_dump {
+  if [[ -z $1 ]]; then
+    echo "provide ssh host"
+    return
+  fi
+
+  if [[ -z $2 ]]; then
+    echo "provide dump destination"
+    return
+  fi
+
+  selected=$(ssh "$1" docker ps --filter image=postgres:* --format "{{.Names}}" | fzf)
+
+  if [[ -z $selected ]]; then
+    return
+  fi
+
+  ssh "$1" docker exec "$selected" pg_dump -U db --format=c db > "$2$(date +'%Y-%m-%dT%H.%M.%S%z')"
+
+}
+
+function ggcompile {
+  find -L $GGROOT -mindepth 1 -maxdepth 5 -type d -name .git  -prune | xargs -n 1 dirname > "$GGROOT/compiled"
+}
+
+function tssh {
+  if [[ -z $1 ]]; then
+    echo "provide ssh host"
+    return
+  fi
+
+   ssh -t "$@" "command -v tmux && (tmux a || tmux new-session -s gorazd -c ~) || bash"
+}
