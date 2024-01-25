@@ -39,9 +39,6 @@ eval "$(pyenv virtualenv-init -)"
 # ggman
 eval "$(ggman shellrc)"
 
-# gpg
-export GPG_TTY=$(tty)
-
 # custom functions and aliases
 source "$ZDOTDIR/aliases.zsh"
 source "$ZDOTDIR/scripts.zsh"

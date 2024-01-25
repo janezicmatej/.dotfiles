@@ -37,3 +37,11 @@ command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 # poetry
 export POETRY_HOME="$XDG_DATA_HOME/poetry"
 command -v poetry >/dev/null || export PATH="$POETRY_HOME/bin:$PATH"
+
+# gnupg
+export GPG_TTY=$TTY
+
+# aflabs
+export USER_UID=$(id -u)
+export USER_GID=$(id -g)
+

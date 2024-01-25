@@ -53,7 +53,7 @@ function pyinit {
 
   DIRNAME=$(basename "$PWD")
 
-  if [[ $(pyenv versions | grep "$DIRNAME") ]]; then
+  if [[ $(pyenv versions | grep -E "/${DIRNAME}$") ]]; then
     echo "found existing version with this name, setting..."
     pyenv local "$DIRNAME"
     return
@@ -101,7 +101,7 @@ function get_dump {
     return
   fi
 
-  selected=$(ssh "$1" docker ps --filter image=postgres:* --format "{{.Names}}" | fzf)
+  selected=$(ssh "$1" docker ps --format "{{.Names}}" | fzf)
 
   if [[ -z $selected ]]; then
     return
