@@ -1,5 +1,5 @@
 # Neovim should be able to run anywhere
-neovim
+pynvim
 
 # Upgrade pip while we're at it.
 pip
