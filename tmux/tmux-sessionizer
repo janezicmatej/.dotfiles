@@ -6,7 +6,7 @@ else
     if ! [[ -f "$GGROOT/compiled" ]]; then
         find -L $GGROOT -mindepth 1 -maxdepth 5 -type d -name .git  -prune | xargs -n 1 dirname > "$GGROOT/compiled"
     fi
-    selected=$(cat "$GGROOT/compiled" | fzf)
+    selected=$(cat "$GGROOT/compiled" | fzf --cycle --bind 'tab:toggle-up,btab:toggle-down')
 fi
 
 if [[ -z $selected ]]; then
