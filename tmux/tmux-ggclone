@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+if [[ $# -eq 1 ]]; then
+    selected=$1
+else
+    read -p "ssh url: " selected
+fi
+
+if [[ -z $selected ]]; then
+    exit 0
+fi
+
+ggman clone "$selected"
+find -L $GGROOT -mindepth 1 -maxdepth 5 -type d -name .git -prune | xargs -n 1 dirname > "$GGROOT/compiled"
+

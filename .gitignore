@@ -27,6 +27,7 @@ zsh/*
 tmux/*
 !tmux/tmux.conf
 !tmux/tmux-sessionizer
+!tmux/tmux-ggclone
 
 # git
 !git
