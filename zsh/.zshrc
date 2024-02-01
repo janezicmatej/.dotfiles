@@ -32,6 +32,8 @@ antigen theme romkatv/powerlevel10k
 # apply plugin load
 antigen apply
 
+unsetopt autocd
+
 # pyenv
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
