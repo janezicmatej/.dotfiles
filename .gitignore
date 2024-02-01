@@ -28,6 +28,7 @@ tmux/*
 !tmux/tmux.conf
 !tmux/tmux-sessionizer
 !tmux/tmux-ggclone
+!tmux/tmux-ssher
 
 # git
 !git
