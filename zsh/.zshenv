@@ -45,3 +45,5 @@ export GPG_TTY=$TTY
 export USER_UID=$(id -u)
 export USER_GID=$(id -g)
 
+# name
+export NAME="Matej Janežič"
