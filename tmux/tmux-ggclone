@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source "$XDG_CONFIG_HOME/zsh/scripts.zsh"
+
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
@@ -11,5 +13,4 @@ if [[ -z $selected ]]; then
 fi
 
 ggman clone "$selected"
-find -L $GGROOT -mindepth 1 -maxdepth 5 -type d -name .git -prune | xargs -n 1 dirname > "$GGROOT/compiled"
-
+ggcompile

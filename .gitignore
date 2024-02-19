@@ -26,6 +26,7 @@ zsh/*
 !tmux
 tmux/*
 !tmux/tmux.conf
+!tmux/tmux-new-project
 !tmux/tmux-sessionizer
 !tmux/tmux-ggclone
 !tmux/tmux-ssher

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+if [[ -z ${NAME:+x} ]]; then
+    echo "missing name"
+    sleep 2
+    exit 1
+fi
+
+source "$XDG_CONFIG_HOME/zsh/scripts.zsh"
+
+read -p "name: " project_name
+
+if [[ -z $project_name ]]; then
+    exit 0
+fi
+
+if [[ -d "$GGROOT/no-remote/$project_name" ]]; then
+    exit 0
+fi
+
+project="$GGROOT/no-remote/$project_name"
+git init $project
+echo "# $project_name" >>"$project/README.md"
+
+gitignore_template=$(
+    find "$GGROOT"/github.com/github/gitignore/*.gitignore -exec basename {} \; \
+        | sed 's/\(.*\)\.gitignore/\1/' \
+        | fzf --cycle --bind 'tab:toggle-up,btab:toggle-down'
+)
+
+if ! [[ -z $gitignore_template ]]; then
+    gitignore="$GGROOT/github.com/github/gitignore/$gitignore_template.gitignore"
+    echo "$gitignore"
+    echo "$project/.gitignore"
+    cat "$gitignore" >>"$project/.gitignore"
+fi
+
+license_template=$(
+    find "$GGROOT"/git.janezic.dev/janezicmatej/license/*.license -exec basename {} \; \
+        | sed 's/\(.*\)\.license/\1/' \
+        | fzf --cycle --bind 'tab:toggle-up,btab:toggle-down'
+)
+
+if ! [[ -z $license_template ]]; then
+    license="$GGROOT/git.janezic.dev/janezicmatej/license/$license_template.license"
+    export YEAR="$(date '+%Y')"
+    envsubst <"$license" >"$project/LICENSE"
+fi
+
+ggcompile
