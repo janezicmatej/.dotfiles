@@ -3,7 +3,7 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(grep "Host .*" ~/.ssh/config | grep -v "*" | sed "s/Host \(.*\)/\1/" | fzf --cycle --bind 'tab:toggle-up,btab:toggle-down')
+    selected="$(grep 'Host .*' ~/.ssh/config | grep -v '*' | sed 's/Host \(.*\)/\1/' | fzf --cycle --bind 'tab:toggle-up,btab:toggle-down')"
 fi
 
 if [[ -z $selected ]]; then
