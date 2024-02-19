@@ -1,9 +1,8 @@
-alias s="ssh"
 alias z="exec zsh"
 alias t="tmux a || tmux new-session -s $(whoami) -c ~"
 alias n=nvim_ve
 # alias vim=nvim_ve
-alias ssh-hosts="grep -P \"^Host ([^*]+)$\" $HOME/.ssh/config | sed 's/Host //'"
+alias s="ssh-menu"
 
 # navigation
 alias cdgit="cd $GGROOT"
