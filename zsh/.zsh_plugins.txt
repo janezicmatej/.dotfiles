@@ -1,0 +1,17 @@
+# set up Zsh completions with plugins
+# mattmc3/ez-compinit
+zsh-users/zsh-completions kind:fpath path:src
+
+# frameworks like oh-my-zsh are supported
+getantidote/use-omz        # handle OMZ dependencies
+ohmyzsh/ohmyzsh path:lib   # load OMZ's library
+ohmyzsh/ohmyzsh path:plugins/git
+
+# theme
+romkatv/powerlevel10k
+
+# popular fish-like plugins
+zsh-users/zsh-autosuggestions
+
+# nvm
+lukechilds/zsh-nvm

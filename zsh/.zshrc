@@ -9,28 +9,13 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# pre plugin load
+## pre plugin load
+# nvm
 export NVM_COMPLETION=true
 
-# load antigen
-typeset -a ANTIGEN_CHECK_FILES=(${ZDOTDIR:-~}/.zshrc ${ZDOTDIR:-~}/antigen.zsh)
-source $ZDOTDIR/antigen.zsh
-
-# oh-my-zsh library and git plugin
-antigen use oh-my-zsh
-antigen bundle git
-
-# zsh users plugin
-antigen bundle zsh-users/zsh-autosuggestions
-
-# other
-antigen bundle lukechilds/zsh-nvm
-
-# theme
-antigen theme romkatv/powerlevel10k
-
-# apply plugin load
-antigen apply
+# source antidote
+source $ZDOTDIR/.antidote/antidote.zsh
+antidote load
 
 unsetopt autocd
 
