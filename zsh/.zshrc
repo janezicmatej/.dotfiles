@@ -12,6 +12,8 @@ fi
 ## pre plugin load
 # nvm
 export NVM_COMPLETION=true
+# zsh autosugestions
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ffffff,bg=cyan,bold,underline"
 
 # source antidote
 source $ZDOTDIR/.antidote/antidote.zsh
