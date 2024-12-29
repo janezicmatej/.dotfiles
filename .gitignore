@@ -40,3 +40,9 @@ git/*
 !git/config
 !git/gitignore
 !git/aflabs
+
+# ghostty
+!ghostty
+ghostty/*
+!ghostty/config
+!ghostty/themes
