@@ -3,18 +3,27 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    if ! [[ -f "$GGROOT/compiled" ]]; then
-        find -L $GGROOT -mindepth 1 -maxdepth 5 -type d -name .git  -prune | xargs -n 1 dirname > "$GGROOT/compiled"
-    fi
-    selected=$(cat "$GGROOT/compiled" | fzf --cycle --bind 'tab:toggle-up,btab:toggle-down')
+    selected=$(ggman exec pwd 2>&1 >/dev/null \
+        | fzf --cycle \
+        --bind 'tab:toggle-up,btab:toggle-down' \
+        --header "Navigate with ARROW KEYS or TAB/S-TAB. Select with ENTER." \
+        --border "double" \
+        --border-label "tmux-sessionizer" \
+        --ansi \
+        --highlight-line \
+    )
 fi
 
 if [[ -z $selected ]]; then
     exit 0
 fi
 
+path=$selected
+while [[ "$path" != "" && ! -e "$path/.sessionizer" ]]; do
+    path=${path%/*}
+done
 
-selected_name=$(basename "$selected" | tr . _)
+selected_name="$(cat $path/.sessionizer)_$(basename $selected | tr . _ | head -c 10)_$(echo $selected | shasum -a 256 | head -c 4)"
 tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then

@@ -1,25 +1,77 @@
 #!/usr/bin/env bash
 
-if [[ $# -eq 1 ]]; then
-    selected=$1
-else
-    selected="$(grep 'Host .*' ~/.ssh/config | grep -v '*' | sed 's/Host \(.*\)/\1/' | fzf --cycle --bind 'tab:toggle-up,btab:toggle-down')"
-fi
+function _preview {
+    file=$1; shift
+    host=$1; shift
 
-if [[ -z $selected ]]; then
-    exit 0
-fi
+    j=$(cat $file \
+        | jc --ssh-conf \
+        | jq -r ".[] \
+            | select(.host == \"$host\") \
+            | .jumps = (if (.proxyjump | type == \"array\" and length > 0) then (.proxyjump | join(\",\")) else \"null\" end)" \
+        )
 
-selected_name="ssh_$selected"
-tmux_running=$(pgrep tmux)
+    user=$(jq -r '.user' <<<$j)
+    port=$(jq -r '.port' <<<$j)
+    hostname=$(jq -r '.hostname' <<<$j)
+    jumps=$(jq -r '.jumps' <<<$j)
 
-if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-    tmux new-session -s $selected_name -c $selected ssh "$selected"
-    exit 0
-fi
 
-if ! tmux has-session -t=$selected_name 2> /dev/null; then
-    tmux new-session -ds $selected_name -c $selected ssh "$selected"
-fi
+    echo "$(cat <<EOF
+User $user
+HostName $hostname\
+$([[ $port != "null" ]] && echo -e "\nPort $port")\
+$([[ $jumps != "null" ]] && echo -e "\nProxyJump $jumps")
 
-tmux switch-client -t $selected_name
+command:
+    ssh $user@$hostname$([[ $port != "null" ]] && echo -n " -p $port")$([[ $jumps != "null" ]] && echo -n " -J $jumps")
+EOF)"
+
+    echo ""
+
+    host $hostname 
+
+    echo ""
+
+    ping -c 1 -W 1 $hostname &>/dev/null \
+        && echo "Host is reachable!" \
+        || echo "Host is not reachable!"
+}
+
+export -f _preview
+
+function main() {
+    if [[ $# -eq 1 ]]; then
+        selected=$1
+    else
+        selected="$(rg -N --no-heading 'Host .*' ~/.ssh \
+            | sed 's/Host \(.*\)/\1/' \
+            | SHELL=$(which bash) fzf --cycle \
+                --bind 'tab:toggle-up,btab:toggle-down' \
+                --delimiter ':' \
+                --with-nth 2 \
+                --preview "_preview {1} {2}" \
+            | cut -d ":" -f2
+            )"
+    fi
+
+    if [[ -z $selected ]]; then
+        exit 0
+    fi
+
+    selected_name="ssh_$selected"
+    tmux_running=$(pgrep tmux)
+
+    if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
+        tmux new-session -s $selected_name -c $selected ssh "$selected"
+        exit 0
+    fi
+
+    if ! tmux has-session -t=$selected_name 2> /dev/null; then
+        tmux new-session -ds $selected_name -c $selected ssh "$selected"
+    fi
+
+    tmux switch-client -t $selected_name
+}
+
+main "$@"
