@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+function get-dump {
+    if [[ -z $1 ]]; then
+        host="$(rg -N --no-heading 'Host .*' ~/.ssh \
+            | sed 's/Host \(.*\)/\1/' \
+            | fzf --cycle \
+                --bind 'tab:toggle-up,btab:toggle-down' \
+                --delimiter ':' \
+                --with-nth 2 \
+                --header "Navigate with ARROW KEYS or TAB/S-TAB. Select with ENTER." \
+                --border "double" \
+                --border-label "get-dump" \
+                --ansi \
+                --highlight-line \
+            | cut -d ":" -f2
+        )"
+        if [[ -z $host ]]; then
+            return
+        fi
+    else
+        host=$1
+    fi
+
+    selected=$(ssh "$host" docker ps --format "{{.Names}}" \
+        | fzf --cycle \
+            --bind 'tab:toggle-up,btab:toggle-down' \
+            --header "Navigate with ARROW KEYS or TAB/S-TAB. Select with ENTER." \
+            --border "double" \
+            --border-label "get-dump" \
+            --ansi \
+            --highlight-line \
+    )
+
+    if [[ -z $selected ]]; then
+        echo "not provided"
+        return
+    fi
+
+    if ! [[ -d "./dumps" ]]; then
+        mkdir "./dumps"
+    fi
+
+    location="./dumps/${host}_${selected}_$(date +'%s')"
+
+    echo "dumping to $location"
+
+    ssh "$host" docker exec "$selected" pg_dump -U db --format=c db >"$location"
+}
+
+get-dump "$@"

@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+function _ssh_menu_preview {
+    file=$1; shift
+    host=$1; shift
+
+    j=$(cat $file \
+        | jc --ssh-conf \
+        | jq -r ".[] \
+            | select(.host == \"$host\") \
+            | .jumps = (\
+                if (.proxyjump | type == \"array\" and length > 0) then \
+                    (.proxyjump | join(\",\")) \
+                else \
+                    \"null\" \
+                end \
+            )" \
+        )
+
+    user=$(jq -r '.user' <<<$j)
+    port=$(jq -r '.port' <<<$j)
+    hostname=$(jq -r '.hostname' <<<$j)
+    jumps=$(jq -r '.jumps' <<<$j)
+
+
+    echo "$(cat <<EOF
+User $user
+HostName $hostname\
+$([[ $port != "null" ]] && echo -e "\nPort $port")\
+$([[ $jumps != "null" ]] && echo -e "\nProxyJump $jumps")
+
+command:
+    ssh $user@$hostname$([[ $port != "null" ]] && echo -n " -p $port")$([[ $jumps != "null" ]] && echo -n " -J $jumps")
+EOF
+    )"
+
+    echo ""
+
+    if command -v host 2>&1 >/dev/null; then
+        host $hostname
+        echo ""
+    fi
+
+    ping -c 1 -W 1 $hostname &>/dev/null \
+        && echo "Host is reachable!" \
+        || echo "Host is not reachable!"
+}
+
+export -f _ssh_menu_preview
+
+function ssh-menu {
+    selected="$(rg -N --no-heading 'Host .*' ~/.ssh \
+        | sed 's/Host \(.*\)/\1/' \
+        | SHELL=$(which bash) fzf --cycle \
+            --bind 'tab:toggle-up,btab:toggle-down' \
+            --delimiter ':' \
+            --with-nth 2 \
+            --preview "_ssh_menu_preview {1} {2}" \
+            --preview-label "ssh config info" \
+            --header "Navigate with ARROW KEYS or TAB/S-TAB. Select with ENTER." \
+            --border "double" \
+            --border-label "ssh-menu" \
+            --ansi \
+            --highlight-line \
+        | cut -d ":" -f2
+        )"
+
+    if [[ -z $selected ]]; then
+        return
+    fi
+
+    ssh "$selected"
+}
+
+ssh-menu
