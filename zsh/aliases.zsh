@@ -1,5 +1,5 @@
 alias z="exec zsh"
-alias t="tmux a || tmux new-session -s $(whoami) -c ~"
+alias t="tmux a || ~/.config/tmux/tmux-sessionizer ~"
 alias n=nvim_ve
 # alias vim=nvim_ve
 alias s="ssh-menu"
@@ -22,3 +22,9 @@ alias ci="glab ci list"
 alias bm=batman
 alias grow="~/.local/bin/cbonsai -liWC -M 15 -t 2 -w 60 -s $(date +%s)"
 alias clean_ds_store='find . -name ".DS_Store" -type f -delete -print'
+
+# ruff
+alias ruffme="ruff format && ruff check --fix"
+
+# clipboard
+alias xcp="xclip -selection c"
