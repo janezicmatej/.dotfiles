@@ -75,6 +75,7 @@ history = 10000
 
 [window]
 dynamic_title = true
+option_as_alt = "Both"
 
 [window.dimensions]
 columns = 150
