@@ -1,7 +1,6 @@
 add_newline = false
 
 format = """\
-$hostname\
 [$directory](cyan)\
 $git_branch\
 $git_commit\
@@ -16,6 +15,7 @@ $lua\
 $nodejs\
 $python\
 $rust\
+$username[@](bold yellow)$hostname\
 """
 
 [character]
@@ -50,3 +50,11 @@ format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
 python_binary = 'python'
 pyenv_version_name = false
 detect_files = [ '.python-version' ]
+
+[username]
+format = '[$user]($style)'
+
+[hostname]
+style = 'bold yellow'
+format = '[$ssh_symbol$hostname]($style)'
+ssh_symbol = ''
