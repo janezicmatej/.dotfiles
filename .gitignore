@@ -25,6 +25,11 @@ zsh/*
 !zsh/ssh-menu
 !zsh/get-dump
 
+# starship
+!starship
+starship/*
+!starship/config.toml
+
 # tmux
 !tmux
 tmux/*
