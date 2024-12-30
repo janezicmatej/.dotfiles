@@ -37,6 +37,10 @@ export PATH="$XDG_DATA_HOME/neovim/bin:$PATH"
 export PYENV_ROOT="$XDG_DATA_HOME/.pyenv"
 command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
 
+# pyenv-virtualenv
+# leave python promt to starship
+export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+
 # poetry
 export POETRY_HOME="$XDG_DATA_HOME/poetry"
 command -v poetry >/dev/null || export PATH="$POETRY_HOME/bin:$PATH"
@@ -50,3 +54,6 @@ export USER_GID=$(id -g)
 
 # name
 export NAME="Matej Janežič"
+
+# starship nest config into a folder, default is ~/.config/startship.toml
+export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"

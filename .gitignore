@@ -21,7 +21,6 @@ zsh/*
 !zsh/scripts.zsh
 !zsh/aliases.zsh
 !zsh/completions/.keep
-!zsh/.p10k.zsh
 !zsh/ssh-menu
 !zsh/get-dump
 
