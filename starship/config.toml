@@ -1,6 +1,7 @@
 add_newline = false
 
 format = """\
+$username$hostname\
 [$directory](cyan)\
 $git_branch\
 $git_commit\
@@ -15,7 +16,7 @@ $lua\
 $nodejs\
 $python\
 $rust\
-$username[@](bold yellow)$hostname\
+$cmd_duration\
 """
 
 [character]
@@ -52,9 +53,9 @@ pyenv_version_name = false
 detect_files = [ '.python-version' ]
 
 [username]
-format = '[$user]($style)'
+format = '[$user@]($style)'
 
 [hostname]
 style = 'bold yellow'
-format = '[$ssh_symbol$hostname]($style)'
+format = '[$ssh_symbol$hostname]($style) '
 ssh_symbol = ''
