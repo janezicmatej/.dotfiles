@@ -16,8 +16,7 @@ unsetopt autocd
 
 # pyenv
 eval "$(pyenv init - zsh)"
-# https://github.com/pyenv/pyenv-virtualenv/issues/259
-eval "$(pyenv virtualenv-init - zsh | sed s/precmd/chpwd/g)"
+eval "$(pyenv virtualenv-init - zsh)"
 
 # ggman
 eval "$(ggman shellrc)"
