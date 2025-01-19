@@ -1,7 +1,7 @@
 add_newline = false
 
 format = """\
-$username$hostname\
+$hostname\
 [$directory](cyan)\
 $git_branch\
 $git_commit\
@@ -52,10 +52,7 @@ python_binary = 'python'
 pyenv_version_name = false
 detect_files = [ '.python-version' ]
 
-[username]
-format = '[$user@]($style)'
-
 [hostname]
+ssh_only = false
 style = 'bold yellow'
-format = '[$ssh_symbol$hostname]($style) '
-ssh_symbol = ''
+format = '[$hostname]($style) on '
