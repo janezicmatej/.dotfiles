@@ -1,3 +1,0 @@
-[submodule "nvim"]
-	path = nvim
-	url = git@git.janezic.dev:janezicmatej/nvim.git

@@ -8,7 +8,6 @@
 
 # allow some stuff to be pushed
 !alacritty
-!nvim
 !.pyenv
 
 # zsh
