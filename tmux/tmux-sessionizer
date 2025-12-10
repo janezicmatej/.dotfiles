@@ -3,7 +3,7 @@
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    selected=$(ggman exec pwd 2>&1 >/dev/null \
+    selected=$(ggman ls \
         | fzf --cycle \
         --bind 'tab:toggle-up,btab:toggle-down' \
         --header "Navigate with ARROW KEYS or TAB/S-TAB. Select with ENTER." \
@@ -18,12 +18,8 @@ if [[ -z $selected ]]; then
     exit 0
 fi
 
-path=$selected
-while [[ "$path" != "" && ! -e "$path/.sessionizer" ]]; do
-    path=${path%/*}
-done
+selected_name="$(echo $selected | shasum -a 256 | head -c 4)_$(basename $selected | tr . _ | head -c 10)"
 
-selected_name="$(cat $path/.sessionizer)_$(basename $selected | tr . _ | head -c 10)_$(echo $selected | shasum -a 256 | head -c 4)"
 tmux_running=$(pgrep tmux)
 
 if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then

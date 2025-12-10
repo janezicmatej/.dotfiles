@@ -44,7 +44,7 @@ function main() {
     if [[ $# -eq 1 ]]; then
         selected=$1
     else
-        selected="$(rg -N --no-heading 'Host .*' ~/.ssh \
+        selected="$(rg -N --no-heading '^Host .*' ~/.ssh \
             | sed 's/Host \(.*\)/\1/' \
             | SHELL=$(which bash) fzf --cycle \
                 --bind 'tab:toggle-up,btab:toggle-down' \

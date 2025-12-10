@@ -5,12 +5,14 @@ source "$XDG_CONFIG_HOME/zsh/scripts.zsh"
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
-    read -p "ssh url: " selected
+    read -p "url: " selected
 fi
 
 if [[ -z $selected ]]; then
     exit 0
 fi
 
-ggman clone "$selected"
-ggcompile
+ggman clone $selected
+
+echo ""
+read -p "press enter to continue..."
