@@ -1,5 +1,5 @@
 alias z="exec zsh"
-alias t="tmux a || ~/.config/tmux/tmux-sessionizer ~"
+alias t=tmux_attach
 alias n=nvim_ve
 # alias vim=nvim_ve
 alias s="ssh-menu"
