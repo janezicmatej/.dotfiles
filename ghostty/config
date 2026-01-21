@@ -2,6 +2,8 @@
 # theme = light:gruvbox-material-soft-light,dark:gruvbox-material-soft-dark
 theme = gruvbox-material-soft-dark
 
+minimum-contrast = 1.1
+
 # cursor
 cursor-style = block
 cursor-style-blink = true
@@ -12,8 +14,6 @@ mouse-hide-while-typing = true
 # font stuff
 font-family = JetBrainsMono Nerd Font
 font-size = 15
-font-thicken = true
-bold-is-bright = true
 
 # disable ligatures
 font-feature=-calt
