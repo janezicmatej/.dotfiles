@@ -14,7 +14,9 @@ export PATH="/opt/homebrew/sbin:$PATH"
 export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"
 
 # cargo 
-source "$HOME/.cargo/env"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+        source "$HOME/.cargo/env"
+fi
 
 # language environment
 export LANG=en_US.UTF-8
@@ -46,7 +48,7 @@ export POETRY_HOME="$XDG_DATA_HOME/poetry"
 command -v poetry >/dev/null || export PATH="$POETRY_HOME/bin:$PATH"
 
 # gnupg
-export GPG_TTY=$TTY
+export GPG_TTY=$(tty)
 
 # aflabs
 export USER_UID=$(id -u)

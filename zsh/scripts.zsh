@@ -8,8 +8,6 @@ function nvim_ve {
     fi
 }
 
-alias nvim=nvim_ve
-
 function afm {
     RES=$(curl -s "https://$1/api/monitoring/requirements")
     COUNT=$(echo "$RES" | grep -c $2)

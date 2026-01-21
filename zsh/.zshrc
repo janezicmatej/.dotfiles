@@ -12,11 +12,20 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ffffff,bg=cyan,bold,underline"
 source $ZDOTDIR/.antidote/antidote.zsh
 antidote load
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    antidote load ${ZDOTDIR:-~}/.zsh_plugins_darwin.txt
+fi
+
 unsetopt autocd
 
-# pyenv
-eval "$(pyenv init - zsh)"
-eval "$(pyenv virtualenv-init - zsh)"
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    eval "$(pyenv init - zsh)"
+    eval "$(pyenv virtualenv-init - zsh)"
+fi
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+fi
 
 # ggman
 eval "$(ggman shellrc)"

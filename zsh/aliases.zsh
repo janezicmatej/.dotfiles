@@ -1,7 +1,13 @@
 alias z="exec zsh"
 alias t=tmux_attach
-alias n=nvim_ve
-# alias vim=nvim_ve
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+        alias n=nvim_ve
+        alias vim=nvim_ve
+elif [[ "$OSTYPE" == "linux"* ]]; then
+        alias n=nvim
+fi
+
 alias s="ssh-menu"
 
 # docker

@@ -9,6 +9,3 @@ ohmyzsh/ohmyzsh path:plugins/git
 
 # popular fish-like plugins
 zsh-users/zsh-autosuggestions
-
-# nvm
-lukechilds/zsh-nvm
