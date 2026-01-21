@@ -41,7 +41,7 @@ tmux/*
 !git
 git/*
 !git/config
-!git/gitignore
+!git/ignore
 !git/aflabs
 
 # ghostty

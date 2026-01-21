@@ -1,18 +1,56 @@
+[includeIf "gitdir:~/Desktop/git/git.aflabs.org/"]
+	path = ~/.config/git/config.d/aflabs.conf
+
+[includeIf "gitdir:~/Desktop/git/gitlab.com/flarenetwork"]
+	path = ~/.config/git/config.d/aflabs.conf
+
+[includeIf "gitdir:~/Desktop/git/gitlab.com/flare-foundation"]
+	path = ~/.config/git/flare
+
 [user]
 	name = Matej Janežič
 	email = janezic.mj@gmail.com
+
 [core]
 	autocrlf = input
-	excludesfile = ~/.config/git/gitignore
 	editor = nvim
-[include]
-	path = ~/.config/git/alias
-[include]
-	path = ~/.config/git/commitsign
-[includeIf "gitdir:~/Desktop/git/git.aflabs.org/"]
-	path = ~/.config/git/aflabs
+
+[user]
+        signingkey = AF349EECC849D87B790E88FF6318FFB7DB374B7D
+
+[commit]
+        gpgsign = true
+
+; NOTE:(@janezicmatej) github/gitlab don't support these
+; [push]
+;         gpgsign = true
 
 [init]
 	defaultBranch = main
+
 [alias]
 	blame = "!f() { [ -f .git-blame-ignore-revs ] && git blame --ignore-revs-file .git-blame-ignore-revs \"$@\" || git blame \"$@\"; }; f"
+
+[diff]
+        tool = "nvimdiff"
+
+[difftool]
+        prompt = true
+
+[difftool "nvimdiff"]
+        cmd = nvim -d "$LOCAL" "$REMOTE"
+
+[maintenance]
+        auto = true
+	strategy = incremental
+
+[merge]
+	tool = "nvimdiff"
+
+[mergetool]
+	prompt = true
+	keepBackup = false
+	writeToTemp = true
+
+[mergetool "nvimdiff"]
+	layout = "LOCAL,BASE,REMOTE / MERGED"

@@ -1,16 +1,16 @@
 # mac files
 .DS_Store
 
-# i usually make test.* files for local testing
-# test.*
-# test
-
 # i don't like pushing .vscode and .idea folders, i will force add if needed
 .vscode
 .idea
 
 # pyenv
 .python-version
+
+# nix venv hook
+.nix-venv
+.dev
 
 # i use .ignore for nvim
 .ignore
