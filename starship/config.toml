@@ -11,6 +11,7 @@ $character\
 """
 
 right_format = """\
+$nix_shell\
 $golang\
 $lua\
 $nodejs\
@@ -18,6 +19,10 @@ $python\
 $rust\
 $cmd_duration\
 """
+
+[nix_shell]
+disabled = false
+format = '[n(\($name\))](bold blue) '
 
 [character]
 success_symbol = '[>](bold green)'
