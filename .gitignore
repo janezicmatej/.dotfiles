@@ -49,3 +49,9 @@ git/*
 ghostty/*
 !ghostty/config
 !ghostty/themes
+
+# sway
+!sway
+sway/*
+!sway/config
+!sway/config.d
