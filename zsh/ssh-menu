@@ -49,8 +49,8 @@ EOF
 export -f _ssh_menu_preview
 
 function ssh-menu {
-    selected="$(rg -N --no-heading 'Host .*' ~/.ssh \
-        | sed 's/Host \(.*\)/\1/' \
+    selected="$(rg -N --no-heading '^Host .*' ~/.ssh \
+        | sed 's/Host \(.*\)/\1/' | sort \
         | SHELL=$(which bash) fzf --cycle \
             --bind 'tab:toggle-up,btab:toggle-down' \
             --delimiter ':' \
