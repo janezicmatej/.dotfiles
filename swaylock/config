@@ -1,6 +1,8 @@
 image=~/.assets/lockscreen.png
 
 clock
+datestr=%A, %d/%m/%y
+
 indicator-radius=150
 indicator-thickness=7
 indicator-idle-visible
