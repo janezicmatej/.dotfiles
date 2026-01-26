@@ -15,6 +15,8 @@ output * bg ~/.assets/wallpaper.png fill
 #
 # Example configuration:
 #
+set $wobs /tmp/wob.sock
+exec rm -f $wobs && mkfifo $wobs && tail -f $wobs | wob
 exec swayidle -w 
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
@@ -165,8 +167,8 @@ bindsym $mod+r mode "resize"
 #
     # Special keys to adjust volume via PulseAudio
     bindsym --locked XF86AudioMute exec pactl set-sink-mute \@DEFAULT_SINK@ toggle
-    bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume \@DEFAULT_SINK@ -5%
-    bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume \@DEFAULT_SINK@ +5%
+    bindsym --locked XF86AudioLowerVolume exec pamixer -d 5 && pamixer --get-volume > $wobs
+    bindsym --locked XF86AudioRaiseVolume exec pamixer -i 5 && pamixer --get-volume > $wobs
     bindsym --locked XF86AudioMicMute exec pactl set-source-mute \@DEFAULT_SOURCE@ toggle
     # Special keys to adjust brightness via brightnessctl
     bindsym --locked XF86MonBrightnessDown exec brightnessctl set 5%-
