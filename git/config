@@ -2,10 +2,10 @@
 	path = ~/.config/git/config.d/aflabs.conf
 
 [includeIf "gitdir:~/Desktop/git/gitlab.com/flarenetwork"]
-	path = ~/.config/git/config.d/aflabs.conf
+	path = ~/.config/git/config.d/flare.conf
 
 [includeIf "gitdir:~/Desktop/git/gitlab.com/flare-foundation"]
-	path = ~/.config/git/flare
+	path = ~/.config/git/config.d/flare.conf
 
 [user]
 	name = Matej Janežič
