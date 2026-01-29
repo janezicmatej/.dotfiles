@@ -39,6 +39,10 @@ exec swayidle -w
 #
 # You can also configure each device individually.
 # Read `man 5 sway-input` for more information about this section.
+default_border pixel 3
+
+for_window [class="net-runelite.*"] floating enable
+for_window [class="net-runelite-client-RuneLite"] move scratchpad, scratchpad show
 
 ### Key bindings
 #
