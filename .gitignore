@@ -63,3 +63,8 @@ swaylock/*
 !swayidle
 swayidle/*
 !swayidle/config
+
+# flameshot
+!flameshot
+flameshot/*
+!flameshot/flameshot.ini
