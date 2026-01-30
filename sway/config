@@ -15,8 +15,13 @@ output * bg ~/.assets/wallpaper.png fill
 #
 # Example configuration:
 #
+
+for_window [app_id="org.jellyfin.JellyfinDesktop"] inhibit_idle fullscreen
+exec wlsunset -l 46.1 -L 14.5
+
 set $wobs /tmp/wob.sock
 exec rm -f $wobs && mkfifo $wobs && tail -f $wobs | wob
+
 exec swayidle -w 
 # This will lock your screen after 300 seconds of inactivity, then turn off
 # your displays after another 300 seconds, and turn your screens back on when
