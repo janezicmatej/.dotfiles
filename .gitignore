@@ -55,6 +55,7 @@ ghostty/*
 sway/*
 !sway/config
 !sway/config.d
+!sway/host.d
 
 !swaylock
 swaylock/*

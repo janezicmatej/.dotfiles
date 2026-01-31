@@ -1,2 +1,3 @@
+include host.d/"$(hostname)".conf
 include config.d/*
 include /etc/sway/config.d/*
