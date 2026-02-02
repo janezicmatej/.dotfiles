@@ -1,0 +1,330 @@
+/* -----------------------------------------------------------------------------
+ * Gruvbox Material Dark Palette
+ * ----------------------------------------------------------------------------- */
+@define-color background #282828;
+@define-color background-light #3c3836;
+@define-color foreground #d4be98;
+@define-color black #1d2021;
+@define-color gray #928374;
+@define-color red #ea6962;
+@define-color green #a9b665;
+@define-color yellow #d8a657;
+@define-color blue #7daea3;
+@define-color magenta #d3869b;
+@define-color cyan #89b482;
+@define-color white #ddc7a1;
+@define-color orange #e78a4e;
+
+/* -----------------------------------------------------------------------------
+ * Module Colors (Neovim/Muted Style)
+ * ----------------------------------------------------------------------------- */
+@define-color workspaces-color @gray;
+@define-color workspaces-focused-bg @background-light;
+@define-color workspaces-focused-fg @foreground;
+@define-color workspaces-urgent-bg @red;
+@define-color workspaces-urgent-fg @background;
+
+@define-color cider-color @red;
+@define-color clock-color @foreground;
+@define-color pulseaudio-color @blue;
+@define-color pulseaudio-muted-color @gray;
+@define-color network-color @magenta;
+@define-color network-disconnected-color @red;
+@define-color cpu-color @orange;
+@define-color memory-color @cyan;
+@define-color temperature-color @yellow;
+@define-color temperature-critical-color @red;
+@define-color backlight-color @white;
+@define-color battery-color @foreground;
+@define-color battery-charging-color @green;
+@define-color battery-warning-color @yellow;
+@define-color battery-critical-color @red;
+
+/* -----------------------------------------------------------------------------
+ * Global Setup
+ * ----------------------------------------------------------------------------- */
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 14px;
+}
+
+window#waybar {
+    background-color: transparent;
+    font-weight: bold;
+    color: #ffffff;
+    transition-property: background-color;
+    transition-duration: .5s;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+/* This targets every module */
+#waybar .module {
+    background-color: #1e1e2e; /* Your desired module color */
+    border-radius: 7px;
+    border: 2px solid #d4be98;
+}
+
+/* Specific grouping (Optional: if you want modules to stick together in islands) */
+.modules-left, .modules-center, .modules-right {
+    background: transparent;
+    margin: 12px 10px 5px 10px;
+}
+
+button {
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+}
+
+button:hover {
+    background: inherit;
+    box-shadow: none;
+}
+
+/* -----------------------------------------------------------------------------
+ * Workspaces
+ * ----------------------------------------------------------------------------- */
+#workspaces button {
+    padding: 0 8px;
+    background-color: transparent;
+    color: @workspaces-color;
+    margin: 0;
+}
+
+#workspaces button:hover {
+    background: @background-light;
+    color: @foreground;
+    box-shadow: none;
+}
+
+/* The "Neovim Buffer" Look: 
+   Active workspace is lighter background + cream text. 
+   No flashy underlines. */
+#workspaces button.focused {
+    background-color: @background-light;
+    color: @workspaces-focused-fg;
+    box-shadow: none; 
+}
+
+#workspaces button.urgent {
+    background-color: @workspaces-urgent-bg;
+    color: @workspaces-urgent-fg;
+}
+
+/* -----------------------------------------------------------------------------
+ * Modules
+ * ----------------------------------------------------------------------------- */
+#mode,
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#wireplumber,
+#custom-media,
+#tray,
+#idle_inhibitor,
+#scratchpad,
+#power-profiles-daemon,
+#mpd,
+#custom-cider {
+    color: @clock-color;
+    font-weight: bold;
+    padding: 0 10px;
+    margin: 0 2px;
+    background-color: transparent;
+    border: none; /* Removed the underlines for a cleaner look */
+}
+
+#window,
+#workspaces {
+    margin: 0 4px;
+}
+
+.modules-left > widget:first-child > #workspaces { margin-left: 0; }
+.modules-right > widget:last-child > #workspaces { margin-right: 0; }
+
+/* -----------------------------------------------------------------------------
+ * Module Specifics
+ * ----------------------------------------------------------------------------- */
+
+
+#battery {
+    color: @battery-color;
+}
+
+#battery.charging, #battery.plugged {
+    color: @battery-charging-color;
+}
+
+#battery.warning:not(.charging) {
+    color: @battery-warning-color;
+}
+
+@keyframes blink {
+    to {
+        background-color: @red;
+        color: @background;
+    }
+}
+
+#battery.critical:not(.charging) {
+    color: @battery-critical-color;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* #cpu { */
+/*     color: @cpu-color; */
+/* } */
+/**/
+/* #memory { */
+/*     color: @memory-color; */
+/* } */
+/**/
+/* #disk { */
+/*     color: @yellow; */
+/* } */
+/**/
+/* #backlight { */
+/*     color: @backlight-color; */
+/* } */
+/**/
+/* #network { */
+/*     color: @network-color; */
+/* } */
+/**/
+/* #network.disconnected { */
+/*     color: @network-disconnected-color; */
+/* } */
+/**/
+/* #pulseaudio { */
+/*     color: @pulseaudio-color; */
+/* } */
+/**/
+/* #pulseaudio.muted { */
+/*     color: @pulseaudio-muted-color; */
+/* } */
+/**/
+/* #wireplumber { */
+/*     color: @foreground; */
+/* } */
+/**/
+/* #wireplumber.muted { */
+/*     color: @red; */
+/* } */
+
+#custom-media {
+    color: @green;
+    min-width: 100px;
+}
+
+#temperature {
+    color: @temperature-color;
+}
+
+#temperature.critical {
+    color: @temperature-critical-color;
+}
+
+#tray {
+    background-color: @background-light;
+    border-radius: 4px; /* Slight roundness for the tray container */
+    padding: 0 8px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    color: @red;
+}
+
+#idle_inhibitor {
+    color: @gray;
+}
+
+#idle_inhibitor.activated {
+    color: @foreground;
+}
+
+#mpd {
+    color: @green;
+}
+
+#mpd.disconnected {
+    color: @red;
+}
+
+#mpd.stopped {
+    color: @gray;
+}
+
+#mpd.paused {
+    color: @blue;
+}
+
+#language {
+    background: @background-light;
+    color: @foreground;
+    padding: 0 5px;
+    margin: 0 5px;
+    min-width: 16px;
+}
+
+#keyboard-state {
+    color: @foreground;
+    padding: 0 0px;
+    margin: 0 5px;
+    min-width: 16px;
+}
+
+#keyboard-state > label.locked {
+    color: @red;
+}
+
+#scratchpad {
+    background: transparent;
+    color: @gray;
+}
+
+#scratchpad.empty {
+    background-color: transparent;
+}
+
+#privacy {
+    padding: 0;
+}
+
+#privacy-item {
+    padding: 0 5px;
+    color: @foreground;
+}
+
+#privacy-item.screenshare {
+    color: @orange;
+}
+
+#privacy-item.audio-in {
+    color: @green;
+}
+
+#privacy-item.audio-out {
+    color: @blue;
+}
+
+/* #custom-cider { */
+/*     color: @cider-color; */
+/* } */
