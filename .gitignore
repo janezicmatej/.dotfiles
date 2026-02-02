@@ -65,6 +65,9 @@ swaylock/*
 swayidle/*
 !swayidle/config
 
+!waybar
+!bin
+
 # flameshot
 !flameshot
 flameshot/*
