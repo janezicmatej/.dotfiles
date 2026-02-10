@@ -24,6 +24,7 @@ alias accenton="defaults write -g ApplePressAndHoldEnabled -bool true"
 alias accentoff="defaults write -g ApplePressAndHoldEnabled -bool false"
 
 # git
+alias gpo="git push origin"
 alias gros="git reset origin/$(git_current_branch) --soft"
 alias gcan="git commit -v --amend --no-edit"
 alias glogaa="git log --oneline --graph --all --pretty=format:\"%C(auto)%h %C(blue)(%aL/%cL)%C(auto)%(decorate) %s%Creset\""
