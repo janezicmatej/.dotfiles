@@ -9,7 +9,8 @@
       "sway/workspaces", "sway/mode"
     ],
     "modules-center": [
-      "privacy"
+      "privacy",
+      "custom/ssh-login"
     ],
     "modules-right": [
       "custom/cider",
@@ -170,18 +171,6 @@
     },
     "on-click": "pavucontrol",
   },
-  "custom/media": {
-    "format": "{icon} {text}",
-    "return-type": "json",
-    "max-length": 40,
-    "format-icons": {
-      "spotify": "",
-      "default": "🎜",
-    },
-    "escape": true,
-    "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null", // Script in resources folder
-    // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
-  },
   "custom/power": {
     "format": "⏻ ",
     "tooltip": false,
@@ -194,6 +183,13 @@
       "hibernate": "systemctl hibernate",
     },
   },
+  "custom/ssh-login": {
+    "format": "{}",
+    "interval": 1,
+    // "exec-if": "who",
+    "exec": "who | awk '{ print $2 }'",
+    "on-click": "pkill -9 -t $(who | awk '{ print $2 }')",
+  },
   },
   {
     "layer": "top",
@@ -205,14 +201,14 @@
       "network",
       "clock",
     ],
-  "network": {
-    "format-ethernet": "{ipaddr}/{cidr}",
-    "format-disconnected": "disconnected"
-  },
-  "clock": {
-    "interval": 1,
-    "format": "{:%Y/%m/%d %H:%M:%S}",
-    "tooltip-format": "<big><tt>{calendar}</tt></big>",
-  },
+    "network": {
+      "format-ethernet": "{ipaddr}/{cidr}",
+      "format-disconnected": "disconnected"
+    },
+    "clock": {
+      "interval": 1,
+      "format": "{:%Y/%m/%d %H:%M:%S}",
+      "tooltip-format": "<big><tt>{calendar}</tt></big>",
+    },
   }
 ]
