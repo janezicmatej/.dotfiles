@@ -1,12 +1,3 @@
-[includeIf "gitdir:~/Desktop/git/git.aflabs.org/"]
-	path = ~/.config/git/config.d/aflabs.conf
-
-[includeIf "gitdir:~/Desktop/git/gitlab.com/flarenetwork"]
-	path = ~/.config/git/config.d/flare.conf
-
-[includeIf "gitdir:~/Desktop/git/gitlab.com/flare-foundation"]
-	path = ~/.config/git/config.d/flare.conf
-
 [user]
 	name = Matej Janežič
 	email = janezic.mj@gmail.com
@@ -54,3 +45,12 @@
 
 [mergetool "nvimdiff"]
 	layout = "LOCAL,BASE,REMOTE / MERGED"
+
+[includeIf "gitdir:~/git/git.aflabs.org/**"]
+	path = ~/.config/git/config.d/aflabs.conf
+
+[includeIf "gitdir:~/git/gitlab.com/flarenetwork/**"]
+	path = ~/.config/git/config.d/flare.conf
+
+[includeIf "gitdir:~/git/gitlab.com/flare-foundation/**"]
+	path = ~/.config/git/config.d/flare.conf

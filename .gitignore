@@ -42,7 +42,10 @@ tmux/*
 git/*
 !git/config
 !git/ignore
-!git/aflabs
+!git/config.d
+git/config.d/*
+!git/config.d/aflabs.conf
+!git/config.d/flare.conf
 
 # ghostty
 !ghostty
