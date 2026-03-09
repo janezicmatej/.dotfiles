@@ -1,43 +1,54 @@
 add_newline = false
 
 format = """\
+$username\
 $hostname\
-[$directory](cyan)\
+$directory\
 $git_branch\
 $git_commit\
 $git_state\
 $git_status\
-$character\
-"""
-
-right_format = """\
 $nix_shell\
 $golang\
 $lua\
 $nodejs\
 $python\
 $rust\
+$dotnet\
+$c\
+$solidity\
+$terraform\
+$kubernetes\
+$helm\
 $cmd_duration\
+$line_break\
+$character\
 """
 
-[nix_shell]
-disabled = false
-format = '[n(\($name\))](bold blue) '
+[username]
+show_always = true
+format = '[$user](bold yellow)'
+
+[hostname]
+ssh_only = false
+format = '[@$hostname](bold yellow) '
+
+[directory]
+style = 'bold cyan'
+truncation_length = 1
+truncate_to_repo = false
+fish_style_pwd_dir_length = 1
 
 [character]
 success_symbol = '[>](bold green)'
 error_symbol = '[>](bold red)'
 
-[directory]
-truncation_length = 1
-truncate_to_repo = false
-fish_style_pwd_dir_length = 1
+[git_branch]
+format = 'on [$branch(:$remote_branch)]($style) '
+symbol = ''
 
 [git_commit]
 tag_symbol = ''
-
-[git_branch]
-symbol = ''
 
 [git_status]
 format = '[$all_status$ahead_behind]($style)'
@@ -51,13 +62,47 @@ stashed = '[*${count}](green) '
 deleted = '[x${count}](red) '
 renamed = '[r${count}](yellow) '
 
+[nix_shell]
+disabled = false
+format = '[nix](bold blue) '
+
+[golang]
+symbol = 'go-'
+
+[lua]
+symbol = 'lua-'
+
+[nodejs]
+symbol = 'node-'
+
 [python]
-format = 'via [${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+symbol = 'py-'
+format = '[${symbol}(${version})]($style) '
 python_binary = 'python'
 pyenv_version_name = false
-detect_files = [ '.python-version' ]
+detect_files = ['.python-version']
 
-[hostname]
-ssh_only = false
-style = 'bold yellow'
-format = '[$hostname]($style) on '
+[rust]
+symbol = 'rs-'
+
+[c]
+symbol = 'c-'
+
+[dotnet]
+symbol = 'net-'
+
+[solidity]
+symbol = 'sol-'
+
+[terraform]
+symbol = 'tf-'
+
+[kubernetes]
+disabled = false
+symbol = 'k8s-'
+
+[helm]
+symbol = 'helm-'
+
+[cmd_duration]
+format = '[took $duration]($style) '
