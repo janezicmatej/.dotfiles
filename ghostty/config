@@ -1,11 +1,8 @@
-# theme
-# theme = light:gruvbox-material-soft-light,dark:gruvbox-material-soft-dark
 theme = gruvbox-material-soft-dark
 
 minimum-contrast = 1.1
 
 # cursor
-cursor-style = block
 cursor-style-blink = true
 
 # mouse
@@ -25,19 +22,9 @@ window-theme = dark
 window-height = 36
 window-width = 150
 
-# macos send option as alt
-macos-option-as-alt = true
-
 # no warning full close
 confirm-close-surface = false
 # quit-after-last-window-closed = true
-
-# keybinds
-keybind = global:cmd+enter=new_window
-
-# shell integrations for zsh
-# https://ghostty.org/docs/features/shell-integration 
-shell-integration = zsh
 
 # gtk
 gtk-titlebar = false
