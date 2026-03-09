@@ -1,56 +1,50 @@
 [user]
 	name = Matej Janežič
 	email = janezic.mj@gmail.com
+	signingkey = AF349EECC849D87B790E88FF6318FFB7DB374B7D
+
+[commit]
+	gpgsign = true
+
+; NOTE:(@janezicmatej) github/gitlab don't support these
+; [push]
+;	gpgsign = true
 
 [core]
 	autocrlf = input
 	editor = nvim
 
-[user]
-        signingkey = AF349EECC849D87B790E88FF6318FFB7DB374B7D
-
-[commit]
-        gpgsign = true
-
-; NOTE:(@janezicmatej) github/gitlab don't support these
-; [push]
-;         gpgsign = true
-
 [init]
 	defaultBranch = main
 
-[alias]
-	blame = "!f() { [ -f .git-blame-ignore-revs ] && git blame --ignore-revs-file .git-blame-ignore-revs \"$@\" || git blame \"$@\"; }; f"
-
 [diff]
-        tool = "nvimdiff"
-
-[difftool]
-        prompt = true
+	tool = nvimdiff
 
 [difftool "nvimdiff"]
-        cmd = nvim -d "$LOCAL" "$REMOTE"
-
-[maintenance]
-        auto = true
-	strategy = incremental
+	cmd = nvim -d "$LOCAL" "$REMOTE"
 
 [merge]
-	tool = "nvimdiff"
+	tool = nvimdiff
 
 [mergetool]
-	prompt = true
 	keepBackup = false
 	writeToTemp = true
 
 [mergetool "nvimdiff"]
 	layout = "LOCAL,BASE,REMOTE / MERGED"
 
-[includeIf "gitdir:~/git/git.aflabs.org/**"]
+[alias]
+	blame = "!f() { [ -f .git-blame-ignore-revs ] && git blame --ignore-revs-file .git-blame-ignore-revs \"$@\" || git blame \"$@\"; }; f"
+
+[maintenance]
+	auto = true
+	strategy = incremental
+
+[includeIf "gitdir:~/git/git.aflabs.org/"]
 	path = ~/.config/git/config.d/aflabs.conf
 
-[includeIf "gitdir:~/git/gitlab.com/flarenetwork/**"]
+[includeIf "gitdir:~/git/gitlab.com/flarenetwork/"]
 	path = ~/.config/git/config.d/flare.conf
 
-[includeIf "gitdir:~/git/gitlab.com/flare-foundation/**"]
+[includeIf "gitdir:~/git/gitlab.com/flare-foundation/"]
 	path = ~/.config/git/config.d/flare.conf
