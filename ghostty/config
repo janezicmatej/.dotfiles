@@ -1,4 +1,4 @@
-theme = gruvbox-material-soft-dark
+theme = light:gruvbox-material-soft-light,dark:gruvbox-material-soft-dark
 
 minimum-contrast = 1.1
 
