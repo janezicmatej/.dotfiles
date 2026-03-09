@@ -1,7 +1,11 @@
-# zsh history file
+# history
 HISTFILE="$XDG_STATE_HOME/zsh/history"
 HISTSIZE=10000
 SAVEHIST=10000
+setopt HIST_IGNORE_DUPS   # skip consecutive duplicates
+setopt HIST_IGNORE_SPACE  # skip commands starting with space
+setopt SHARE_HISTORY      # share history across sessions
+setopt HIST_REDUCE_BLANKS # strip extra whitespace
 
 # gnupg
 export GPG_TTY=$(tty)
