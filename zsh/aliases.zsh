@@ -62,7 +62,12 @@ alias gcpc="git cherry-pick --continue"
 
 # git stash/reset
 alias gstp="git stash pop"
+alias grhh="git reset --hard HEAD"
 gros() { git reset "origin/$(git_current_branch)" --soft }
+groh() { git reset "origin/$(git_current_branch)" --hard }
+
+# git navigation
+alias grt='cd "$(git rev-parse --show-toplevel || echo .)"'
 
 # ruff
 alias ruffme="ruff check --fix && ruff format"
