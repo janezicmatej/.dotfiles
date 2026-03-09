@@ -7,9 +7,6 @@ export XDG_STATE_HOME="$HOME/.local/state"
 # ~/.local/bin
 export PATH="$HOME/.local/bin:$PATH"
 
-# language environment
-export LANG=en_US.UTF-8
-
 # editor
 export EDITOR=nvim
 
@@ -21,27 +18,6 @@ export PATH="$GOPATH/bin:$PATH"
 # ggman
 export GGROOT="$HOME/git"
 
-# neovim
-export PATH="$XDG_DATA_HOME/neovim/bin:$PATH"
-
-# pyenv
-export PYENV_ROOT="$XDG_DATA_HOME/.pyenv"
-command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-
-# pyenv-virtualenv
-# leave python promt to starship
-export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-
-# poetry
-export POETRY_HOME="$XDG_DATA_HOME/poetry"
-command -v poetry >/dev/null || export PATH="$POETRY_HOME/bin:$PATH"
-
-# gnupg
-export GPG_TTY=$(tty)
-
-# aflabs
-export USER_UID=$(id -u)
-export USER_GID=$(id -g)
 
 # name
 export NAME="Matej Janežič"
