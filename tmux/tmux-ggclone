@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source "$XDG_CONFIG_HOME/zsh/scripts.zsh"
-
 if [[ $# -eq 1 ]]; then
     selected=$1
 else
@@ -12,7 +10,7 @@ if [[ -z $selected ]]; then
     exit 0
 fi
 
-ggman clone $selected
+ggman clone "$selected"
 
 echo ""
 read -p "press enter to continue..."
