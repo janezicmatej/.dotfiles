@@ -18,7 +18,12 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ffffff,bg=cyan,bold,underline"
 source "$ZDOTDIR/.antidote/antidote.zsh"
 antidote load
 
-unsetopt autocd
+# shell options
+unsetopt autocd             # don't cd into directories by name
+setopt NO_BEEP              # no terminal bell
+setopt AUTO_PUSHD           # cd pushes to directory stack
+setopt PUSHD_IGNORE_DUPS    # no duplicates in directory stack
+setopt EXTENDED_GLOB        # enable extended glob operators (#, ~, ^)
 
 # ggman
 eval "$(ggman shellrc)"
