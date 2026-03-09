@@ -4,22 +4,22 @@ function _preview {
     file=$1; shift
     host=$1; shift
 
-    j=$(cat $file \
+    j=$(cat "$file" \
         | jc --ssh-conf \
         | jq -r ".[] \
             | select(.host == \"$host\") \
             | .jumps = (if (.proxyjump | type == \"array\" and length > 0) then (.proxyjump | join(\",\")) else \"null\" end)" \
         )
 
-    user=$(jq -r '.user' <<<$j)
-    port=$(jq -r '.port' <<<$j)
-    hostname=$(jq -r '.hostname' <<<$j)
-    jumps=$(jq -r '.jumps' <<<$j)
+    user=$(jq -r '.user' <<<"$j")
+    port=$(jq -r '.port' <<<"$j")
+    hostname=$(jq -r '.hostname' <<<"$j")
+    jumps=$(jq -r '.jumps' <<<"$j")
 
 
     echo "$(cat <<EOF
 User $user
-HostName $hostname\
+ HostName $hostname\
 $([[ $port != "null" ]] && echo -e "\nPort $port")\
 $([[ $jumps != "null" ]] && echo -e "\nProxyJump $jumps")
 
@@ -29,11 +29,11 @@ EOF)"
 
     echo ""
 
-    host $hostname 
+    host "$hostname"
 
     echo ""
 
-    ping -c 1 -W 1 $hostname &>/dev/null \
+    ping -c 1 -W 1 "$hostname" &>/dev/null \
         && echo "Host is reachable!" \
         || echo "Host is not reachable!"
 }
@@ -60,18 +60,17 @@ function main() {
     fi
 
     selected_name="ssh_$selected"
-    tmux_running=$(pgrep tmux)
 
-    if [[ -z $TMUX ]] && [[ -z $tmux_running ]]; then
-        tmux new-session -s $selected_name -c $selected ssh "$selected"
+    if [[ -z $TMUX ]] && ! tmux list-sessions 2>/dev/null; then
+        tmux new-session -s "$selected_name" ssh "$selected"
         exit 0
     fi
 
-    if ! tmux has-session -t=$selected_name 2> /dev/null; then
-        tmux new-session -ds $selected_name -c $selected ssh "$selected"
+    if ! tmux has-session -t="$selected_name" 2>/dev/null; then
+        tmux new-session -ds "$selected_name" ssh "$selected"
     fi
 
-    tmux switch-client -t $selected_name
+    tmux switch-client -t "$selected_name"
 }
 
 main "$@"
