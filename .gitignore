@@ -19,9 +19,7 @@ zsh/*
 !zsh/.zsh_plugins*.txt
 !zsh/scripts.zsh
 !zsh/aliases.zsh
-!zsh/completions/.keep
 !zsh/ssh-menu
-!zsh/get-dump
 
 # starship
 !starship

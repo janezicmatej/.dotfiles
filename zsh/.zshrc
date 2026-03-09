@@ -33,10 +33,18 @@ source "$ZDOTDIR/aliases.zsh"
 source "$ZDOTDIR/scripts.zsh"
 
 # completion
-fpath=("$ZDOTDIR/completions" $fpath)
+fpath=("$XDG_DATA_HOME/zsh/completions" $fpath)
 autoload -Uz compinit
-compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
+# only regenerate dump once per day
+local _zcompdump="$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
+if [[ -n $_zcompdump(#qN.mh+24) ]]; then
+    compinit -d "$_zcompdump"
+else
+    compinit -C -d "$_zcompdump"
+fi
 zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
 eval "$(starship init zsh)"
 eval "$(direnv hook zsh)"
