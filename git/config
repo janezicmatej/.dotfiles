@@ -5,6 +5,7 @@
 
 [commit]
 	gpgsign = true
+	verbose = true
 
 ; NOTE:(@janezicmatej) github/gitlab don't support these
 ; [push]
@@ -17,14 +18,16 @@
 [init]
 	defaultBranch = main
 
-[diff]
-	tool = nvimdiff
+[rebase]
+	updateRefs = true
 
-[difftool "nvimdiff"]
-	cmd = nvim -d "$LOCAL" "$REMOTE"
+[rerere]
+	enabled = true
+	autoUpdate = true
 
 [merge]
 	tool = nvimdiff
+	conflictStyle = zdiff3
 
 [mergetool]
 	keepBackup = false
@@ -33,8 +36,26 @@
 [mergetool "nvimdiff"]
 	layout = "LOCAL,BASE,REMOTE / MERGED"
 
+[diff]
+	tool = nvimdiff
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
+
+[difftool "nvimdiff"]
+	cmd = nvim -d "$LOCAL" "$REMOTE"
+
 [alias]
-	blame = "!f() { [ -f .git-blame-ignore-revs ] && git blame --ignore-revs-file .git-blame-ignore-revs \"$@\" || git blame \"$@\"; }; f"
+	blame-ignore = "config blame.ignoreRevsFile .git-blame-ignore-revs"
+
+[branch]
+	sort = -committerdate
+
+[tag]
+	sort = version:refname
+
+[help]
+	autoCorrect = prompt
 
 [maintenance]
 	auto = true
