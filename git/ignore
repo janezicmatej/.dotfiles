@@ -1,22 +1,24 @@
-# mac files
+# os
 .DS_Store
 
-# i don't like pushing .vscode and .idea folders, i will force add if needed
+# editors
 .vscode
 .idea
-
-# pyenv
-.python-version
-
-# nix venv hook
-.nix-venv
-.dev
-
-# i use .ignore for nvim
 .ignore
 
-# todo files
-TODO.md
+# ai
+CLAUDE.local.md
+**/.claude/settings.local.json
 
-# db dumps files
+# languages
+.python-version
+
+# nix
+.nix-venv
+.dev
+.envrc
+.direnv/
+
+# project-local
+TODO.md
 dumps
