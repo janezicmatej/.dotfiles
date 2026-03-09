@@ -1,2 +1,5 @@
-export PATH="/usr/local/bin:/opt/homebrew/bin:$HOME/neovim/bin:$HOME/bin:${PATH}"
-
+path=(
+    "$HOME/.local/bin"
+    "$GOPATH/bin"
+    $path
+)
