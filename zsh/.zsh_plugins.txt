@@ -1,5 +1,0 @@
-# completions
-zsh-users/zsh-completions kind:fpath path:src
-
-# fish-like plugins
-zsh-users/zsh-autosuggestions

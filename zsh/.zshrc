@@ -10,13 +10,33 @@ setopt HIST_REDUCE_BLANKS # strip extra whitespace
 # gnupg
 export GPG_TTY=$(tty)
 
-## pre plugin load
-# zsh autosuggestions
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ffffff,bg=cyan,bold,underline"
+# plugins
+local _plugins="$XDG_DATA_HOME/zsh/plugins"
+local _stamp="$XDG_CACHE_HOME/zsh/plugins-updated"
+local _repos=(
+    "https://github.com/zsh-users/zsh-completions"
+    "https://github.com/zsh-users/zsh-autosuggestions"
+)
+local _needs_update=0
 
-# source antidote
-source "$ZDOTDIR/.antidote/antidote.zsh"
-antidote load
+if [[ ! -f "$_stamp" ]] || [[ -n $_stamp(#qN.mh+168) ]]; then
+    mkdir -p "${_stamp:h}"
+    touch "$_stamp"
+    _needs_update=1
+fi
+
+for _repo in $_repos; do
+    if [[ ! -d "$_plugins/${_repo:t}" ]]; then
+        git clone "$_repo" "$_plugins/${_repo:t}"
+    elif (( _needs_update )); then
+        git -C "$_plugins/${_repo:t}" pull --quiet &
+    fi
+done
+(( _needs_update )) && wait
+
+fpath=("$_plugins/zsh-completions/src" $fpath)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ffffff,bg=cyan,bold,underline"
+source "$_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 # shell options
 unsetopt autocd             # don't cd into directories by name
