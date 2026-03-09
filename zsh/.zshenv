@@ -7,17 +7,6 @@ export XDG_STATE_HOME="$HOME/.local/state"
 # ~/.local/bin
 export PATH="$HOME/.local/bin:$PATH"
 
-# brew sbin
-export PATH="/opt/homebrew/sbin:$PATH"
-
-# brew lib
-export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/lib"
-
-# cargo 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-        source "$HOME/.cargo/env"
-fi
-
 # language environment
 export LANG=en_US.UTF-8
 

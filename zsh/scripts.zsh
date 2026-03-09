@@ -1,13 +1,3 @@
-function nvim_ve {
-    if [[ -e $VIRTUAL_ENV && -f "$VIRTUAL_ENV/bin/activate" ]]; then
-        source "$VIRTUAL_ENV/bin/activate"
-        command nvim $@
-        deactivate
-    else
-        command nvim $@
-    fi
-}
-
 function afm {
     RES=$(curl -s "https://$1/api/monitoring/requirements")
     COUNT=$(echo "$RES" | grep -c $2)
@@ -57,7 +47,7 @@ function lh {
         PORT=$1
     fi
 
-    open "http://localhost:$PORT"
+    xdg-open "http://localhost:$PORT"
 }
 
 function dps {
