@@ -1,3 +1,10 @@
+# shell options
+unsetopt autocd             # don't cd into directories by name
+setopt NO_BEEP              # no terminal bell
+setopt AUTO_PUSHD           # cd pushes to directory stack
+setopt PUSHD_IGNORE_DUPS    # no duplicates in directory stack
+setopt EXTENDED_GLOB        # enable extended glob operators (#, ~, ^)
+
 # history
 HISTFILE="$XDG_STATE_HOME/zsh/history"
 HISTSIZE=10000
@@ -6,9 +13,6 @@ setopt HIST_IGNORE_DUPS   # skip consecutive duplicates
 setopt HIST_IGNORE_SPACE  # skip commands starting with space
 setopt SHARE_HISTORY      # share history across sessions
 setopt HIST_REDUCE_BLANKS # strip extra whitespace
-
-# gnupg
-export GPG_TTY=$(tty)
 
 # plugins
 local _plugins="$XDG_DATA_HOME/zsh/plugins"
@@ -38,17 +42,7 @@ fpath=("$_plugins/zsh-completions/src" $fpath)
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ffffff,bg=cyan,bold,underline"
 source "$_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-# shell options
-unsetopt autocd             # don't cd into directories by name
-setopt NO_BEEP              # no terminal bell
-setopt AUTO_PUSHD           # cd pushes to directory stack
-setopt PUSHD_IGNORE_DUPS    # no duplicates in directory stack
-setopt EXTENDED_GLOB        # enable extended glob operators (#, ~, ^)
-
-# ggman
-eval "$(ggman shellrc)"
-
-# custom functions and aliases
+# aliases and functions
 source "$ZDOTDIR/aliases.zsh"
 source "$ZDOTDIR/scripts.zsh"
 
@@ -66,5 +60,10 @@ zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
+# tool hooks
+eval "$(ggman shellrc)"
 eval "$(starship init zsh)"
 eval "$(direnv hook zsh)"
+
+# gnupg
+export GPG_TTY=$(tty)
