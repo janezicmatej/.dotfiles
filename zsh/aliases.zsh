@@ -3,7 +3,7 @@ alias t=tmux_attach
 
 alias n=nvim
 
-alias s="ssh-menu"
+alias s="~/.config/bin/ssh-menu"
 
 # docker
 alias dp="docker ps --format 'table {{.Names}}\t{{.Ports}}'"

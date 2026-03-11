@@ -26,7 +26,7 @@ function tmux_attach {
     fi
 
     if [[ -z $tmux_running ]]; then
-        ~/.config/tmux/tmux-sessionizer ~
+        ~/.config/tmux/scripts/tmux-sessionizer ~
     else
         tmux a
     fi

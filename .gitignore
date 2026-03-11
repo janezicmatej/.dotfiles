@@ -17,7 +17,6 @@ zsh/*
 !zsh/.zprofile
 !zsh/scripts.zsh
 !zsh/aliases.zsh
-!zsh/ssh-menu
 
 # starship
 !starship
@@ -28,10 +27,7 @@ starship/*
 !tmux
 tmux/*
 !tmux/tmux.conf
-!tmux/tmux-new-project
-!tmux/tmux-sessionizer
-!tmux/tmux-ggclone
-!tmux/tmux-ssher
+!tmux/scripts
 
 # git
 !git
@@ -63,6 +59,11 @@ swaylock/*
 !swayidle
 swayidle/*
 !swayidle/config
+
+# bin
+!bin
+bin/*
+!bin/ssh-menu
 
 # flameshot
 !flameshot
