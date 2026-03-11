@@ -7,9 +7,6 @@
 !.git-blame-ignore-revs
 !README.md
 
-# allow some stuff to be pushed
-!alacritty
-
 # zsh
 !zsh
 zsh/*
