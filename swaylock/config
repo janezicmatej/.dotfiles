@@ -1,3 +1,6 @@
+ignore-empty-password
+show-failed-attempts
+
 image=~/.assets/lockscreen.png
 
 clock

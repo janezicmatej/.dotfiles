@@ -4,6 +4,7 @@
 # allowed misc files
 !.gitmodules
 !.gitignore
+!.git-blame-ignore-revs
 !README.md
 
 # allow some stuff to be pushed
@@ -59,6 +60,13 @@ swaylock/*
 !swayidle
 swayidle/*
 !swayidle/config
+
+# waybar
+!waybar
+waybar/*
+!waybar/config.jsonc
+!waybar/style.css
+!waybar/cider.sh
 
 # bin
 !bin
