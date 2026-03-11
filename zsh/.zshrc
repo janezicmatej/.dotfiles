@@ -1,4 +1,5 @@
 # shell options
+bindkey -e                  # emacs line editing
 unsetopt autocd             # don't cd into directories by name
 setopt NO_BEEP              # no terminal bell
 setopt AUTO_PUSHD           # cd pushes to directory stack
@@ -20,6 +21,7 @@ local _stamp="$XDG_CACHE_HOME/zsh/plugins-updated"
 local _repos=(
     "https://github.com/zsh-users/zsh-completions"
     "https://github.com/zsh-users/zsh-autosuggestions"
+    "https://github.com/romkatv/zsh-no-ps2"
 )
 local _needs_update=0
 
@@ -41,6 +43,34 @@ done
 fpath=("$_plugins/zsh-completions/src" $fpath)
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ffffff,bg=cyan,bold,underline"
 source "$_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$_plugins/zsh-no-ps2/zsh-no-ps2.plugin.zsh"
+
+# line editing widgets
+autoload -Uz up-line-or-beginning-search down-line-or-beginning-search bracketed-paste-magic
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+zle -N bracketed-paste bracketed-paste-magic
+# only use builtin widgets during paste to avoid autosuggestions conflict
+zstyle ':bracketed-paste-magic' active-widgets '.self-*'
+
+# terminal application mode for correct terminfo sequences
+if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
+    autoload -Uz add-zle-hook-widget
+    function zle_application_mode_start { echoti smkx }
+    function zle_application_mode_stop { echoti rmkx }
+    add-zle-hook-widget -Uz zle-line-init zle_application_mode_start
+    add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
+fi
+
+# key bindings
+[[ -n "${terminfo[kcuu1]}" ]] && bindkey -- "${terminfo[kcuu1]}" up-line-or-beginning-search
+[[ -n "${terminfo[kcud1]}" ]] && bindkey -- "${terminfo[kcud1]}" down-line-or-beginning-search
+[[ -n "${terminfo[khome]}" ]] && bindkey -- "${terminfo[khome]}" beginning-of-line
+[[ -n "${terminfo[kend]}" ]]  && bindkey -- "${terminfo[kend]}"  end-of-line
+[[ -n "${terminfo[kdch1]}" ]] && bindkey -- "${terminfo[kdch1]}" delete-char
+[[ -n "${terminfo[kcbt]}" ]]  && bindkey -- "${terminfo[kcbt]}"  reverse-menu-complete
+bindkey -- '^[[1;5C' forward-word        # ctrl+right
+bindkey -- '^[[1;5D' backward-word       # ctrl+left
 
 # aliases and functions
 source "$ZDOTDIR/aliases.zsh"
