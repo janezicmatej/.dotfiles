@@ -4,13 +4,8 @@ if [[ $# -eq 1 ]]; then
     selected=$1
 else
     selected=$(ggman ls \
-        | fzf --cycle \
-        --bind 'tab:toggle-up,btab:toggle-down' \
-        --header "Navigate with ARROW KEYS or TAB/S-TAB. Select with ENTER." \
-        --border "double" \
+        | fzf \
         --border-label "tmux-sessionizer" \
-        --ansi \
-        --highlight-line \
     )
 fi
 
