@@ -91,6 +91,7 @@ eww/scripts/*
 !sway/scripts
 sway/scripts/*
 !sway/scripts/power-menu.sh
+!sway/scripts/screenshot.sh
 
 # bin
 !bin
@@ -107,8 +108,3 @@ swaync/*
 !fuzzel
 fuzzel/*
 !fuzzel/fuzzel.ini
-
-# flameshot
-!flameshot
-flameshot/*
-!flameshot/flameshot.ini
