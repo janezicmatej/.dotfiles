@@ -1,0 +1,232 @@
+/* gruvbox-material-soft-dark palette
+ * mapped from ghostty/themes/gruvbox-material-soft-dark
+ * ansi 0=#252423  1=#ea6962  2=#a9b665  3=#d8a657
+ *      4=#7daea3  5=#d3869b  6=#89b482  7=#d4be98
+ * bg=#32302f  fg=#d4be98  selection=#45403d */
+@define-color bg      #32302f;
+@define-color bg_dim  #252423;
+@define-color bg_sel  #45403d;
+@define-color fg      #d4be98;
+@define-color red     #ea6962;
+@define-color green   #a9b665;
+@define-color yellow  #d8a657;
+@define-color blue    #7daea3;
+@define-color magenta #d3869b;
+@define-color cyan    #89b482;
+@define-color gray    #928374;
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* bar: dark background, modules float inside */
+window#waybar {
+    background-color: @bg_dim;
+    color: @fg;
+}
+
+window#waybar.hidden {
+    opacity: 0.2;
+}
+
+button {
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+}
+
+button:hover {
+    background: inherit;
+    box-shadow: none;
+}
+
+/* workspaces */
+#workspaces {
+    background-color: @bg;
+    border-radius: 8px;
+    margin: 3px 2px;
+    padding: 0;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    background-color: transparent;
+    color: @gray;
+    margin: 0;
+    border-radius: 8px;
+}
+
+#workspaces button:hover {
+    background-color: @bg_sel;
+    color: @fg;
+    box-shadow: none;
+}
+
+#workspaces button.focused {
+    background-color: @bg_sel;
+    color: @fg;
+    box-shadow: none;
+}
+
+#workspaces button.urgent {
+    background-color: @red;
+    color: @bg_dim;
+}
+
+/* floating pill style for all modules */
+#mode,
+#clock,
+#battery,
+#cpu,
+#memory,
+#backlight,
+#network,
+#wireplumber,
+#mpris,
+#bluetooth,
+#language,
+#custom-mic,
+#custom-vpn,
+#custom-ssh,
+#custom-notification,
+#systemd-failed-units {
+    background-color: @bg;
+    border-radius: 8px;
+    color: @fg;
+    padding: 0 10px;
+    margin: 3px 2px;
+}
+
+/* center: alert zone */
+#custom-ssh.active {
+    color: @cyan;
+    font-size: 20px;
+}
+
+#custom-notification.notification {
+    color: @yellow;
+}
+
+#custom-notification.dnd-notification {
+    color: @red;
+}
+
+#custom-notification.dnd-none {
+    color: @gray;
+}
+
+#systemd-failed-units {
+    color: @red;
+}
+
+/* right: media (hidden by default, visible only when playing/paused) */
+#mpris {
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    background-color: transparent;
+    color: @green;
+}
+
+#mpris.playing {
+    padding: 0 10px;
+    margin: 3px 2px;
+    background-color: @bg;
+}
+
+#mpris.paused {
+    padding: 0 10px;
+    margin: 3px 2px;
+    background-color: @bg;
+    color: @gray;
+}
+
+/* right: connectivity */
+#network.disconnected {
+    color: @red;
+}
+
+#bluetooth {
+    color: @blue;
+}
+
+#custom-vpn {
+    color: @cyan;
+}
+
+/* right: system */
+#cpu {
+    margin-right: 0;
+    border-radius: 8px 0 0 8px;
+}
+
+#memory {
+    margin-left: 0;
+    border-radius: 0 8px 8px 0;
+}
+
+/* right: battery */
+#battery.charging,
+#battery.plugged {
+    color: @green;
+}
+
+#battery.warning:not(.charging) {
+    color: @yellow;
+}
+
+@keyframes blink {
+    to {
+        background-color: @red;
+        color: @bg_dim;
+    }
+}
+
+#battery.critical:not(.charging) {
+    color: @red;
+    animation-name: blink;
+    animation-duration: 0.5s;
+    animation-timing-function: steps(12);
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+/* right: audio */
+#wireplumber.muted {
+    color: @red;
+}
+
+#custom-mic.muted {
+    color: @red;
+}
+
+/* right: audio group (volume + mic + brightness) */
+#wireplumber {
+    margin-right: 0;
+    border-radius: 8px 0 0 8px;
+}
+
+#custom-mic {
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 0;
+}
+
+#backlight {
+    margin-left: 0;
+    border-radius: 0 8px 8px 0;
+}
+
+/* right: clock */
+#clock {
+    color: @fg;
+}
+
+/* mode highlight */
+#mode {
+    color: @bg_dim;
+    background-color: @yellow;
+    padding: 0 10px;
+}
