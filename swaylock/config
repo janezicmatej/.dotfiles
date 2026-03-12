@@ -1,7 +1,7 @@
 ignore-empty-password
 show-failed-attempts
 
-image=~/.assets/lockscreen.png
+image=~/.assets/wallpaper.png
 
 clock
 datestr=%A, %d/%m/%y
@@ -12,23 +12,24 @@ indicator-idle-visible
 indicator-y-position=300
 indicator-x-position=1200
 
-inside-color=000000
-text-color=ffffff
-ring-color=ffffff
+# gruvbox-material-soft-dark
+inside-color=#32302f
+text-color=#d4be98
+ring-color=#928374
 
-inside-ver-color=000000
-text-ver-color=000000
-ring-ver-color=ffffff
+inside-ver-color=#32302f
+text-ver-color=#a9b665
+ring-ver-color=#a9b665
 
-inside-clear-color=000000
-text-clear-color=ffffff
-ring-clear-color=ffffff
+inside-clear-color=#32302f
+text-clear-color=#d8a657
+ring-clear-color=#d8a657
 
-inside-wrong-color=000000
-text-wrong-color=ffffff
-ring-wrong-color=ffffff
+inside-wrong-color=#32302f
+text-wrong-color=#ea6962
+ring-wrong-color=#ea6962
 
-key-hl-color=000000
-bs-hl-color=000000
-caps-lock-key-hl-color=000000
-caps-lock-bs-hl-color=000000
+key-hl-color=#7daea3
+bs-hl-color=#ea6962
+caps-lock-key-hl-color=#d8a657
+caps-lock-bs-hl-color=#ea6962
