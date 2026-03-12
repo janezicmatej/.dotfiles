@@ -8,13 +8,13 @@ if [[ "$1" == "disconnect" ]]; then
   exit 0
 fi
 
-count=$(pgrep -cf 'sshd-session:.*@' 2>/dev/null || echo 0)
+count=$(pgrep -cf 'sshd-session:.*@' 2>/dev/null)
+count=${count:-0}
 
 if [[ "$count" -gt 0 ]]; then
-  # get remote session details
   sessions=$(who 2>/dev/null | awk '$NF ~ /\([0-9]/ {gsub(/[()]/, "", $NF); print $1 "@" $NF}')
-  tooltip=${sessions:-"$count remote sessions"}
-  # replace newlines with \n for valid JSON
+  label="session"; [[ "$count" -gt 1 ]] && label="sessions"
+  tooltip=${sessions:-"$count remote $label"}
   tooltip=${tooltip//$'\n'/\\n}
   tooltip=${tooltip//\"/\\\"}
   printf '{"text": "●", "class": "active", "tooltip": "%s"}\n' "$tooltip"
