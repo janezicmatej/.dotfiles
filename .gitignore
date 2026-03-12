@@ -63,12 +63,50 @@ swayidle/*
 waybar/*
 !waybar/config.jsonc
 !waybar/style.css
-!waybar/cider.sh
+!waybar/scripts
+waybar/scripts/*
+!waybar/scripts/ssh-session.sh
+!waybar/scripts/vpn-status.sh
+!waybar/scripts/notification-status.sh
+!waybar/scripts/mic-status.sh
+
+# eww
+!eww
+eww/*
+!eww/eww.yuck
+!eww/eww.scss
+!eww/scripts
+eww/scripts/*
+!eww/scripts/popup.sh
+!eww/scripts/system.sh
+!eww/scripts/battery.sh
+!eww/scripts/volume.sh
+!eww/scripts/bluetooth.sh
+!eww/scripts/network.sh
+!eww/scripts/vpn.sh
+!eww/scripts/keyboard.sh
+!eww/scripts/media.sh
+
+# sway scripts
+!sway/scripts
+sway/scripts/*
+!sway/scripts/power-menu.sh
 
 # bin
 !bin
 bin/*
 !bin/ssh-menu
+
+# swaync
+!swaync
+swaync/*
+!swaync/config.json
+!swaync/style.css
+
+# fuzzel
+!fuzzel
+fuzzel/*
+!fuzzel/fuzzel.ini
 
 # flameshot
 !flameshot
