@@ -1,0 +1,163 @@
+/* gruvbox-material-soft-dark */
+@define-color bg      #32302f;
+@define-color bg_dim  #252423;
+@define-color bg_sel  #45403d;
+@define-color fg      #d4be98;
+@define-color red     #ea6962;
+@define-color green   #a9b665;
+@define-color yellow  #d8a657;
+@define-color blue    #7daea3;
+@define-color magenta #d3869b;
+@define-color cyan    #89b482;
+@define-color gray    #928374;
+
+* {
+    font-family: "JetBrainsMono Nerd Font";
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* floating notifications */
+.floating-notifications {
+    background: transparent;
+}
+
+.notification {
+    background-color: @bg;
+    border: 2px solid @bg_sel;
+    border-radius: 8px;
+    margin: 4px;
+    padding: 8px;
+}
+
+.notification.critical {
+    border-color: @red;
+}
+
+.notification .summary {
+    color: @fg;
+    font-size: 14px;
+}
+
+.notification .body {
+    color: @gray;
+    font-size: 13px;
+}
+
+.notification .time {
+    color: @gray;
+    font-size: 12px;
+}
+
+.notification .image {
+    margin-right: 8px;
+    border-radius: 4px;
+}
+
+.close-button {
+    background-color: @bg_sel;
+    color: @fg;
+    border-radius: 50%;
+    min-width: 24px;
+    min-height: 24px;
+    padding: 0;
+}
+
+.close-button:hover {
+    background-color: @red;
+    color: @bg_dim;
+}
+
+/* action buttons */
+.notification .text-button {
+    background-color: @bg_sel;
+    color: @fg;
+    border-radius: 4px;
+    padding: 4px 8px;
+    margin: 2px;
+}
+
+.notification .text-button:hover {
+    background-color: @blue;
+    color: @bg_dim;
+}
+
+/* control center panel */
+.control-center {
+    background-color: @bg_dim;
+    border: 2px solid @bg_sel;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+.control-center .notification-row {
+    background-color: transparent;
+    margin: 2px 0;
+}
+
+.control-center .notification-row .notification {
+    background-color: @bg;
+    border: 1px solid @bg_sel;
+}
+
+.control-center .notification-row:hover .notification {
+    border-color: @gray;
+}
+
+/* title widget */
+.widget-title {
+    color: @fg;
+    padding: 4px 8px;
+}
+
+.widget-title button {
+    background-color: @bg_sel;
+    color: @fg;
+    border-radius: 4px;
+    padding: 4px 12px;
+}
+
+.widget-title button:hover {
+    background-color: @red;
+    color: @bg_dim;
+}
+
+/* dnd toggle */
+.widget-dnd {
+    color: @fg;
+    padding: 4px 8px;
+}
+
+.widget-dnd > switch {
+    background-color: @bg_sel;
+    border-radius: 12px;
+}
+
+.widget-dnd > switch:checked {
+    background-color: @yellow;
+}
+
+.widget-dnd > switch slider {
+    background-color: @fg;
+    border-radius: 50%;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+/* empty state */
+.widget-notifications > label {
+    color: @gray;
+    padding: 16px;
+}
+
+/* notification group */
+.notification-group {
+    background-color: @bg;
+    border-radius: 8px;
+    margin: 4px;
+}
+
+.notification-group .notification-group-headers {
+    padding: 4px 8px;
+    color: @gray;
+}
