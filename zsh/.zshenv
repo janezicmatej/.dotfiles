@@ -23,5 +23,8 @@ export NAME="Matej Janežič"
 # starship nest config into a folder, default is ~/.config/starship.toml
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
 
+# cliphist
+export CLIPHIST_DB_PATH="/tmp/cliphist-db"
+
 # fzf
 export FZF_DEFAULT_OPTS="--cycle --bind 'tab:toggle-up,btab:toggle-down' --pointer '>' --color '16' --border 'double' --ansi --highlight-line --header 'Navigate with ARROW KEYS or TAB/S-TAB. Select with ENTER.'"
