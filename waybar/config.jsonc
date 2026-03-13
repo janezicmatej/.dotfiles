@@ -11,12 +11,10 @@
     ],
     "modules-center": [
       "custom/ssh",
-      "custom/notification",
       "systemd-failed-units"
     ],
     "modules-right": [
       "mpris",
-      "custom/vpn",
       "cpu",
       "memory",
       "battery",
@@ -25,7 +23,7 @@
       "backlight",
       "sway/language",
       "bluetooth",
-      "network",
+      "custom/network",
       "clock"
     ],
 
@@ -40,8 +38,7 @@
 
   "sway/language": {
     "format": "{short}",
-    "on-click": "swaymsg input type:keyboard xkb_switch_layout next",
-    "on-click-right": "~/.config/eww/scripts/popup.sh keyboard-popup"
+    "on-click": "swaymsg input type:keyboard xkb_switch_layout next"
   },
 
   "custom/ssh": {
@@ -50,15 +47,6 @@
     "interval": 15,
     "exec": "~/.config/waybar/scripts/ssh-session.sh",
     "on-click": "~/.config/waybar/scripts/ssh-session.sh disconnect"
-  },
-
-  "custom/notification": {
-    "format": "{}",
-    "return-type": "json",
-    "exec": "~/.config/waybar/scripts/notification-status.sh",
-    "on-click": "sleep 0.1 && swaync-client -t -sw",
-    "on-click-right": "sleep 0.1 && swaync-client -d -sw",
-    "escape": true
   },
 
   "systemd-failed-units": {
@@ -70,7 +58,6 @@
     "on-click": "ghostty -e sh -c 'systemctl --failed; systemctl --user --failed; read'"
   },
 
-  // right: media
   "mpris": {
     "format": "{artist} - {title}",
     "format-paused": "{artist} - {title} [paused]",
@@ -78,53 +65,35 @@
     "max-length": 35,
     "tooltip-format": "{player}: {artist} - {title} ({album})",
     "on-click": "playerctl play-pause",
-    "on-click-right": "~/.config/eww/scripts/popup.sh media-popup",
     "on-scroll-up": "playerctl next",
     "on-scroll-down": "playerctl previous"
   },
 
-  // right: connectivity
-  "network": {
+  "custom/network": {
+    "format": "{}",
+    "return-type": "json",
     "interval": 5,
-    "format-ethernet": "󰈀 {ipaddr}",
-    "format-wifi": "󰖩 {ipaddr}",
-    "format-linked": "󰈀 (no ip)",
-    "format-disconnected": "󰖪",
-    "tooltip-format": "{ifname} {ipaddr}/{cidr}\n{gwaddr}\n{bandwidthUpBits}up {bandwidthDownBits}down",
-    "on-click-right": "~/.config/eww/scripts/popup.sh network-popup"
+    "exec": "~/.config/waybar/scripts/network-status.sh"
   },
 
   "bluetooth": {
     "format": "󰂯",
     "format-connected": "󰂯 {num_connections}",
     "format-connected-battery": "󰂯 {num_connections}",
-    "tooltip-format-connected": "{device_enumerate}",
-    "on-click-right": "~/.config/eww/scripts/popup.sh bluetooth-popup"
+    "tooltip-format-connected": "{device_enumerate}"
   },
-
-  "custom/vpn": {
-    "format": "{}",
-    "return-type": "json",
-    "interval": 10,
-    "exec": "~/.config/waybar/scripts/vpn-status.sh",
-    "on-click-right": "~/.config/eww/scripts/popup.sh vpn-popup"
-  },
-
 
   "cpu": {
     "format": "󰻠 {usage}%",
-    "tooltip": false,
-    "on-click-right": "~/.config/eww/scripts/popup.sh system-popup"
+    "tooltip": false
   },
 
   "memory": {
     "interval": 10,
     "format": "󰍛 {percentage}%",
-    "tooltip-format": "total: {total:0.2f}GiB\nused: {used:0.2f}GiB\navailable: {avail:0.2f}GiB\nswap: {swapUsed:0.2f}/{swapTotal:0.2f}GiB",
-    "on-click-right": "~/.config/eww/scripts/popup.sh system-popup"
+    "tooltip-format": "total: {total:0.2f}GiB\nused: {used:0.2f}GiB\navailable: {avail:0.2f}GiB\nswap: {swapUsed:0.2f}/{swapTotal:0.2f}GiB"
   },
 
-  // right: battery
   "battery": {
     "states": {
       "warning": 30,
@@ -136,16 +105,13 @@
     "format-full": "󰁹 full",
     "format-alt": "{time}",
     "tooltip-format": "{timeTo}\n{power}W",
-    "on-click": "p=$(powerprofilesctl get); case $p in power-saver) n=balanced;; balanced) n=performance;; *) n=power-saver;; esac; powerprofilesctl set $n",
-    "on-click-right": "~/.config/eww/scripts/popup.sh battery-popup"
+    "on-click": "p=$(powerprofilesctl get); case $p in power-saver) n=balanced;; balanced) n=performance;; *) n=power-saver;; esac; powerprofilesctl set $n"
   },
 
-  // right: audio
   "wireplumber": {
     "format": "󰕾 {volume}%",
     "format-muted": "󰖁 muted",
     "on-click": "pamixer -t",
-    "on-click-right": "~/.config/eww/scripts/popup.sh volume-popup",
     "on-scroll-up": "pamixer -i 5",
     "on-scroll-down": "pamixer -d 5",
     "tooltip-format": "{node_name}: {volume}%"
@@ -157,18 +123,15 @@
     "interval": 2,
     "exec": "~/.config/waybar/scripts/mic-status.sh",
     "on-click": "pamixer --default-source -t",
-    "on-click-right": "~/.config/eww/scripts/popup.sh volume-popup",
     "on-scroll-up": "pamixer --default-source -i 5",
     "on-scroll-down": "pamixer --default-source -d 5"
   },
 
   "backlight": {
     "format": "󰃟 {percent}%",
-    "tooltip": false,
-    "on-click-right": "~/.config/eww/scripts/popup.sh volume-popup"
+    "tooltip": false
   },
 
-  // right: clock
   "clock": {
     "interval": 1,
     "format": "{:%d/%m %H:%M:%S}",

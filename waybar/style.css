@@ -83,13 +83,12 @@ button:hover {
 #cpu,
 #memory,
 #backlight,
-#network,
 #wireplumber,
 #mpris,
 #bluetooth,
 #language,
 #custom-mic,
-#custom-vpn,
+#custom-network,
 #custom-ssh,
 #custom-notification,
 #systemd-failed-units {
@@ -101,17 +100,12 @@ button:hover {
 }
 
 /* center: alert zone */
-#custom-ssh {
-    min-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-top: 3px;
-    margin-bottom: 3px;
-}
-
 #custom-ssh.active {
     color: @cyan;
-    font-size: 10px;
+    font-size: 18px;
+    padding: 0 10px;
+    margin-top: -2px;
+    margin-bottom: -2px;
 }
 
 #custom-notification.notification {
@@ -153,16 +147,12 @@ button:hover {
 }
 
 /* right: connectivity */
-#network.disconnected {
+#custom-network.disconnected {
     color: @red;
 }
 
 #bluetooth {
     color: @blue;
-}
-
-#custom-vpn {
-    color: @cyan;
 }
 
 /* right: system */
