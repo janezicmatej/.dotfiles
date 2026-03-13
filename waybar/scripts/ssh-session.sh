@@ -8,7 +8,7 @@ if [[ "$1" == "disconnect" ]]; then
   exit 0
 fi
 
-count=$(pgrep -cf 'sshd-session:.*@' 2>/dev/null)
+count=$(pgrep -cf '[s]shd-session:.*@' 2>/dev/null)
 count=${count:-0}
 
 if [[ "$count" -gt 0 ]]; then
