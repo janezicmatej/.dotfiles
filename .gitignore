@@ -92,6 +92,8 @@ eww/scripts/*
 sway/scripts/*
 !sway/scripts/power-menu.sh
 !sway/scripts/screenshot.sh
+!sway/scripts/ws-to-current.sh
+!sway/scripts/power-aware-effects.sh
 
 # bin
 !bin
