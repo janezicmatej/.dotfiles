@@ -110,3 +110,9 @@ swaync/*
 !fuzzel
 fuzzel/*
 !fuzzel/fuzzel.ini
+
+# claude
+!claude
+claude/*
+!claude/CLAUDE.md
+!claude/settings.json

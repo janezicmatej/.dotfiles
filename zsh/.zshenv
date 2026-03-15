@@ -23,6 +23,9 @@ export NAME="Matej Janežič"
 # starship nest config into a folder, default is ~/.config/starship.toml
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
 
+# claude
+export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"
+
 # cliphist
 export CLIPHIST_DB_PATH="/tmp/cliphist-db"
 

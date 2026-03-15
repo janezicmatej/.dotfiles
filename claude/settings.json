@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__todo__*",
+      "mcp__nixos__*"
+    ]
+  },
+  "hooks": {},
+  "voiceEnabled": true,
+  "skipDangerousModePermissionPrompt": true,
+  "effortLevel": "high",
+  "mcpServers": {}
+}
