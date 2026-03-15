@@ -111,6 +111,11 @@ swaync/*
 fuzzel/*
 !fuzzel/fuzzel.ini
 
+# mako
+!mako
+mako/*
+!mako/config
+
 # claude
 !claude
 claude/*

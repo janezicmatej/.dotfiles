@@ -1,0 +1,28 @@
+# gruvbox-material-soft-dark
+font=JetBrainsMono Nerd Font 11
+background-color=#252423
+text-color=#d4be98
+border-color=#45403d
+border-size=2
+border-radius=8
+padding=12
+
+width=450
+height=300
+margin=8
+max-visible=3
+
+default-timeout=10000
+ignore-timeout=0
+group-by=app-name
+max-icon-size=32
+icon-path=/usr/share/icons/Adwaita
+layer=overlay
+anchor=top-right
+
+[urgency=low]
+default-timeout=5000
+
+[urgency=critical]
+default-timeout=0
+border-color=#ea6962
