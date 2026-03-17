@@ -31,7 +31,7 @@ Rules:
 - if something related should change, ask first
 
 ## Config locations
-- MCP server configs go in `.claude.json` (project) or `~/.claude.json` (global), not `settings.json`
+- MCP server configs go in `.claude.json` (project) or `$CLAUDE_CONFIG_DIR/.claude.json` (global, defaults to `~/.claude.json`), not `settings.json`
 - `settings.json` is for permissions, hooks, and behavior settings
 
 ## Code quality
