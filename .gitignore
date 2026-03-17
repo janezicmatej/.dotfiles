@@ -69,6 +69,7 @@ waybar/scripts/*
 !waybar/scripts/vpn-status.sh
 !waybar/scripts/notification-status.sh
 !waybar/scripts/mic-status.sh
+!waybar/scripts/network-status.sh
 
 # eww
 !eww
