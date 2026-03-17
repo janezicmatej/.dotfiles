@@ -15,35 +15,36 @@ setopt HIST_IGNORE_SPACE  # skip commands starting with space
 setopt SHARE_HISTORY      # share history across sessions
 setopt HIST_REDUCE_BLANKS # strip extra whitespace
 
-# plugins
-local _plugins="$XDG_DATA_HOME/zsh/plugins"
-local _stamp="$XDG_CACHE_HOME/zsh/plugins-updated"
-local _repos=(
-    "https://github.com/zsh-users/zsh-completions"
-    "https://github.com/zsh-users/zsh-autosuggestions"
-    "https://github.com/romkatv/zsh-no-ps2"
-)
-local _needs_update=0
+# -- plugins --
+# auto-cloned on first launch, auto-updated weekly in background
+PLUGIN_DIR="$XDG_DATA_HOME/zsh/plugins"
+_plugin_stamp="$XDG_CACHE_HOME/zsh/plugins-updated"
+_plugin_needs_update=0
 
-if [[ ! -f "$_stamp" ]] || [[ -n $_stamp(#qN.mh+168) ]]; then
-    mkdir -p "${_stamp:h}"
-    touch "$_stamp"
-    _needs_update=1
+# check if a week (168h) has passed since last update
+if [[ ! -f "$_plugin_stamp" ]] || [[ -n $_plugin_stamp(#qN.mh+168) ]]; then
+    mkdir -p "${_plugin_stamp:h}"
+    touch "$_plugin_stamp"
+    _plugin_needs_update=1
 fi
 
-for _repo in $_repos; do
-    if [[ ! -d "$_plugins/${_repo:t}" ]]; then
-        git clone "$_repo" "$_plugins/${_repo:t}"
-    elif (( _needs_update )); then
-        git -C "$_plugins/${_repo:t}" pull --quiet &
+function ensure_plugin() {
+    local repo=$1 dir="$PLUGIN_DIR/${1##*/}"
+    # clone if missing, pull if update is due
+    if [[ ! -d "$dir" ]]; then
+        git clone --depth=1 "https://github.com/$repo.git" "$dir"
+    elif (( _plugin_needs_update )); then
+        git -C "$dir" pull --quiet &
     fi
-done
-(( _needs_update )) && wait
+    fpath=("$dir" $fpath)
+    source "$dir/${dir##*/}.plugin.zsh" 2>/dev/null
+}
 
-fpath=("$_plugins/zsh-completions/src" $fpath)
+ensure_plugin zsh-users/zsh-completions
+ensure_plugin zsh-users/zsh-autosuggestions
+ensure_plugin romkatv/zsh-no-ps2
+(( _plugin_needs_update )) && wait
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#ffffff,bg=cyan,bold,underline"
-source "$_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
-source "$_plugins/zsh-no-ps2/zsh-no-ps2.plugin.zsh"
 
 # line editing widgets
 autoload -Uz up-line-or-beginning-search down-line-or-beginning-search bracketed-paste-magic
