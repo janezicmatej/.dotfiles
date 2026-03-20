@@ -8,6 +8,7 @@ setopt EXTENDED_GLOB        # enable extended glob operators (#, ~, ^)
 
 # history
 HISTFILE="$XDG_STATE_HOME/zsh/history"
+mkdir -p "${HISTFILE:h}"
 HISTSIZE=10000
 SAVEHIST=10000
 setopt HIST_IGNORE_DUPS   # skip consecutive duplicates
