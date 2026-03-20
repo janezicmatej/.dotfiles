@@ -1,8 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "mcp__todo__*",
-      "mcp__nixos__*"
+      "mcp__todo-mcp__*",
+      "mcp__nixos__*",
+      "Bash(git remote get-url origin)"
     ]
   },
   "hooks": {},
