@@ -122,3 +122,11 @@ mako/*
 claude/*
 !claude/CLAUDE.md
 !claude/settings.json
+
+# direnv
+!direnv
+direnv/*
+!direnv/direnv.toml
+!direnv/lib
+direnv/lib/*
+!direnv/lib/use_dev.sh

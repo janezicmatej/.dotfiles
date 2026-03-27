@@ -15,7 +15,6 @@ CLAUDE.local.md
 
 # nix
 .nix-venv
-.dev
 .envrc
 .direnv/
 
