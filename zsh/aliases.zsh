@@ -1,5 +1,6 @@
 alias z="exec zsh"
 alias t=tmux_attach
+alias e="bash /home/matej/git/git.janezic.dev/janezicmatej/matej.nix/scripts/ephvm-run.sh"
 
 alias n=nvim
 

@@ -31,3 +31,6 @@ export CLIPHIST_DB_PATH="/tmp/cliphist-db"
 
 # fzf
 export FZF_DEFAULT_OPTS="--cycle --bind 'tab:toggle-up,btab:toggle-down' --pointer '>' --color '16' --border 'double' --ansi --highlight-line --header 'Navigate with ARROW KEYS or TAB/S-TAB. Select with ENTER.'"
+
+# ephvm
+export EPHVM_FLAKE="/home/matej/git/git.janezic.dev/janezicmatej/matej.nix"
