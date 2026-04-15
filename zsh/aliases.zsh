@@ -37,7 +37,7 @@ alias gcm='git checkout $(git_main_branch)'
 alias gsw="git switch"
 
 # git fetch/pull/push
-alias gfa="git fetch --all --prune"
+alias gfa="git fetch --all --prune --tags"
 alias gl="git pull"
 alias gp="git push"
 alias gpf="git push --force-with-lease"
