@@ -16,7 +16,7 @@ Rules:
 - keyword comments must include attribution `(@janezicmatej)`
 
 ## Git
-- all git work MUST happen in sub-agents with `isolation: "worktree"`
+- commit only when asked or when delegating to agents
 - agents MUST commit with `--no-gpg-sign`
 
 ## Workflow
