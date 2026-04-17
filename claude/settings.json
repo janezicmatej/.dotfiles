@@ -7,8 +7,12 @@
     ]
   },
   "hooks": {},
-  "voiceEnabled": true,
+  "statusLine": {
+    "type": "command",
+    "command": "sh \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/statusline-command.sh\""
+  },
+  "effortLevel": "xhigh",
   "skipDangerousModePermissionPrompt": true,
-  "effortLevel": "high",
+  "voiceEnabled": true,
   "mcpServers": {}
 }
