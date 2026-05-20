@@ -1,38 +1,36 @@
 # Global CLAUDE.md
 
-## Comments
+## Output format
+- for plans, reports, design docs, and anything benefiting from diagrams, styling, or embedded images, prefer HTML over Markdown
+- for conventional files (README, CONTRIBUTING, LICENSE, CHANGELOG, etc.) use the ecosystem default
 
-Comments must be one of two forms:
+## Diagnostics
+- IMPORTANT: pursue root cause before proposing a fix; never propose a manual workaround before identifying the underlying cause
+- if a fix doesn't resolve the symptom, dig deeper instead of layering patches
+- verify the fix addresses the reported behavior, not just that the error went away
+- for system/boot/network/regression bugs, write a root-cause hypothesis first (see ~/.config/claude/rules/diagnostics.md)
 
-```
-# descriptive but non-verbose comment
-# KEYWORD:(@janezicmatej) descriptive but non-verbose comment
-```
+## Trust & verification
+- IMPORTANT: don't present plausible-sounding details as facts; verify file paths, flags, function and library behavior by reading code or docs first
+- when a claim depends on external behavior (library APIs, system semantics, game mechanics, etc.), cite the source you verified against, or mark it as unverified
 
-Rules:
-- always lowercase
-- no trailing punctuation
-- keywords: WARN, FIX, NOTE, TODO, PERF, TEST, HACK
-- keyword comments must include attribution `(@janezicmatej)`
-
-## Git
-- commit only when asked or when delegating to agents
-- agents MUST commit with `--no-gpg-sign`
-
-## Workflow
-- implement changes directly; don't use sub-agents/Task for simple operations like renames, file moves, or single-file edits; only use Task for genuinely complex parallel exploration or research
-- when redirected or interrupted, immediately stop the current approach and follow the new direction; don't explain or defend the previous approach
-- focus on one goal per session; don't drift into unrelated improvements
-- use Task agents for research and exploration, not for straightforward implementation
+## Planning vs execution
+- IMPORTANT: when asked to "plan", "analyze", "deep-dive", or "research", produce documents only; no Edit/Write (except to the plan file) or Bash mutations until approved
+- if a request is ambiguous between planning and implementing, ask which one
 
 ## Scope
-- NEVER modify anything outside the scope of what was asked
-- don't introduce unrelated changes, touch unrelated configs, or change defaults not mentioned
-- if something related should change, ask first
+- if a diff grows beyond the original request, stop and confirm before continuing
 
-## Config locations
-- MCP server configs go in `.claude.json` (project) or `$CLAUDE_CONFIG_DIR/.claude.json` (global, defaults to `~/.claude.json`), not `settings.json`
-- `settings.json` is for permissions, hooks, and behavior settings
+## Workflow
+- when redirected or interrupted, stop the current approach immediately and follow the new direction without explaining or defending it
+- focus on one goal per session; don't drift into unrelated improvements
 
-## Code quality
-- after making changes, check if the project has linters/formatters and run them
+## Comments
+- lowercase, no trailing punctuation
+- plain: `# descriptive but non-verbose comment`
+- keyword: `# KEYWORD:(@janezicmatej) descriptive but non-verbose comment`
+- keywords: WARN, FIX, NOTE, TODO, PERF, TEST, HACK
+
+## Git
+- agents MUST commit with `--no-gpg-sign`
+- when implementing multi-step work, split into logical commits the user can review and stage independently; don't bundle everything into one
