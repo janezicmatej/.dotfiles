@@ -1,53 +1,353 @@
 #!/usr/bin/env bash
 
-function _ssh_menu_preview {
-    file=$1; shift
-    host=$1; shift
+# pick a host from ~/.ssh/config and every file it includes
+#   ssh-menu       connect to the selection
+#   ssh-menu -s    print the selection: "<host>" or "<host>\tluks" (ctrl-u)
 
-    # show host block from ssh config
-    awk -v h="$host" '
-        $0 == "Host " h { found=1 }
-        found && /^[^ \t]/ && $0 != "Host " h { exit }
-        found
-    ' "$file"
+# exported: the preview and the list reload run in child shells spawned by fzf
+export SSH_MENU_CONFIG="${SSH_MENU_CONFIG:-$HOME/.ssh/config}"
 
-    echo ""
+# reachability results are cached per host and profile so browsing the list
+# does not re-probe (and re-log on) the same server; ctrl-r forgets one host
+export SSH_MENU_CACHE="${XDG_RUNTIME_DIR:-/tmp}/ssh-menu-${USER:-$(id -un)}"
+export SSH_MENU_CACHE_TTL="${SSH_MENU_CACHE_TTL:-3600}"
+# seconds to wait for an sshd banner: a plain tcp connection answers within one;
+# a ProxyCommand such as an iap tunnel needs a few to come up first
+export SSH_MENU_TIMEOUT="${SSH_MENU_TIMEOUT:-1}"
+export SSH_MENU_PROXY_TIMEOUT="${SSH_MENU_PROXY_TIMEOUT:-3}"
+[[ -d $SSH_MENU_CACHE ]] || mkdir -m 700 "$SSH_MENU_CACHE"
 
-    # resolve hostname for reachability check
-    hostname=$(awk -v h="$host" '
-        $0 == "Host " h { found=1; next }
-        found && /^[^ \t]/ { exit }
-        found && /HostName/ { print $2 }
-    ' "$file")
-
-    if command -v host &>/dev/null; then
-        host "${hostname:-$host}"
-        echo ""
-    fi
-
-    ping -c 1 -W 1 "${hostname:-$host}" &>/dev/null \
-        && echo "reachable" \
-        || echo "not reachable"
+# config plus every file named on Include lines; globs expanded, relative
+# paths resolved against ~/.ssh, unreadable files skipped
+function _ssh_menu_files {
+    local line paths path file
+    printf '%s\n' "$SSH_MENU_CONFIG"
+    grep -iE '^[[:space:]]*Include[[:space:]]' "$SSH_MENU_CONFIG" 2>/dev/null \
+        | while read -r line; do
+            paths=${line#*[Ii]nclude}
+            for path in $paths; do
+                path=${path/#\~/$HOME}
+                [[ $path != /* ]] && path="$HOME/.ssh/$path"
+                for file in $path; do
+                    [[ -r $file ]] && printf '%s\n' "$file"
+                done
+            done
+        done
 }
 
-export -f _ssh_menu_preview
+# one line per alias: file, alias, state, group, unlock marker
+# group is the fragment name; a "# unlock" comment inside a Host block, or on
+# the line directly above it, marks the host as having an initrd sshd
+function _ssh_menu_hosts {
+    local file group
+    while read -r file; do
+        group=$(basename "$file")
+        group=${group#ssh-fragment-}
+        awk -v file="$file" -v group="$group" '
+            function flush() {
+                for (i = 0; i < n; i++)
+                    printf "%s\t%s\t%s\t%s\n", file, hosts[i], group, (marks > 0 ? "unlock" : "")
+                n = 0; marks = 0
+            }
+            # unset would compare equal to 0, i.e. "the line before line 1"
+            BEGIN { marker_line = -1 }
+            /^[[:space:]]*[Hh]ost[[:space:]]/ {
+                # a marker on the line directly above belongs to this block; the
+                # previous block keeps any markers of its own
+                carry = marker_line == NR - 1
+                if (carry) marks--
+                flush()
+                marks = carry
+                for (i = 2; i <= NF; i++) if ($i !~ /[*?!]/) hosts[n++] = $i
+                next
+            }
+            /^[[:space:]]*[Mm]atch[[:space:]]/ { flush(); next }
+            /^[[:space:]]*#[[:space:]]*unlock/ { marks++; marker_line = NR }
+            END { flush() }
+        ' "$file"
+    done < <(_ssh_menu_files | awk '!seen[$0]++') \
+        | sort -t $'\t' -k3,3 -k2,2 \
+        | _ssh_menu_with_state
+}
 
+# $1 host, $2 now (epoch): one word summarising the cached default-profile
+# probe, "?" when nothing fresh is cached. reads the cache only, never probes
+function _ssh_menu_state {
+    local host=$1 now=$2 file="$SSH_MENU_CACHE/$1__default" line
+    [[ -f $file ]] || { echo "?"; return; }
+    (( now - $(stat -c %Y "$file") < SSH_MENU_CACHE_TTL )) || { echo "?"; return; }
+    line=$(<"$file")
+    case $line in
+        "jump "*" reachable"*) echo hop ;;
+        "jump "*) echo down ;;
+        reachable*) echo up ;;
+        unreachable*) echo down ;;
+        *) echo - ;;
+    esac
+}
+
+# insert the cached state as the third field: file, alias, state, group, marker.
+# fzf keeps each field's trailing delimiter and the last field has none, so the
+# state must not be last or --with-nth would glue it to its neighbour
+function _ssh_menu_with_state {
+    local now file host group marker
+    now=$(date +%s)
+    while IFS=$'\t' read -r file host group marker; do
+        printf '%s\t%s\t%s\t%s\t%s\n' "$file" "$host" "$(_ssh_menu_state "$host" "$now")" "$group" "$marker"
+    done
+}
+
+# the raw Host block for an alias, comments included
+function _ssh_menu_block {
+    local file=$1 host=$2
+    awk -v h="$host" '
+        /^[[:space:]]*[Hh]ost[[:space:]]/ {
+            found = 0
+            for (i = 2; i <= NF; i++) if ($i == h) found = 1
+        }
+        /^[[:space:]]*[Mm]atch[[:space:]]/ { found = 0 }
+        found
+    ' "$file"
+}
+
+# an ssh server announces itself before the client sends anything, so a bare
+# tcp connection (or a running ProxyCommand) yields the banner without any
+# authentication and therefore without touching the agent or the yubikey
+
+# $1 host, $2 port: prints the sshd banner if the port answers with one
+function _ssh_menu_tcp_banner {
+    # shellcheck disable=SC2016 # $1/$2/$3 are the inner bash's positional args
+    timeout "$SSH_MENU_TIMEOUT" bash -c '
+        exec 3<>"/dev/tcp/$1/$2" || exit 1
+        IFS= read -t "$3" -r banner <&3 || exit 1
+        printf "%s\n" "$banner" | tr -d "\r"
+    ' _ "$1" "$2" "$SSH_MENU_TIMEOUT" 2>/dev/null
+}
+
+# $1 expanded ProxyCommand: the remote banner arrives on its stdout. stdin is an
+# open, silent pipe (not /dev/null): a tunnel command may exit on stdin EOF
+# before the banner arrives. the sleep lives in a process substitution, not the
+# pipeline, so it is not waited for: the result returns as soon as the first
+# line arrives, or after the proxy timeout
+function _ssh_menu_proxy_banner {
+    timeout "$SSH_MENU_PROXY_TIMEOUT" bash -c "$1" < <(sleep "$((SSH_MENU_PROXY_TIMEOUT + 1))") 2>/dev/null | head -n1 | tr -d '\r'
+}
+
+# ssh reading the same config ssh itself would; -F only when overridden, since
+# -F also drops /etc/ssh/ssh_config
+function _ssh_menu_sshflags {
+    [[ $SSH_MENU_CONFIG != "$HOME/.ssh/config" ]] && printf '%s\n' -F "$SSH_MENU_CONFIG"
+    return 0
+}
+
+function _ssh_menu_ssh {
+    local flags=()
+    mapfile -t flags < <(_ssh_menu_sshflags)
+    # shellcheck disable=SC2029 # plain argument passthrough, no remote command built here
+    ssh "${flags[@]}" "$@"
+}
+
+function _ssh_menu_resolve {
+    local host=$1 tag=$2
+    _ssh_menu_ssh -G ${tag:+-P "$tag"} -- "$host" 2>/dev/null
+}
+
+# effective config for one profile plus a (cached) reachability probe
+function _ssh_menu_probe {
+    local host=$1 tag=$2 resolved
+    if ! resolved=$(_ssh_menu_resolve "$host" "$tag") || [[ -z $resolved ]]; then
+        echo "ssh -G failed for $host${tag:+ (-P $tag)}"
+        return
+    fi
+
+    # identityfile only when the profile pins one; ssh -G lists all defaults otherwise
+    awk '
+        $1 == "identitiesonly" && $2 == "yes" { pinned = 1 }
+        $1 ~ /^(hostname|port|user|tag|proxyjump|proxycommand|userknownhostsfile)$/ { print }
+        $1 == "identityfile" && pinned { print }
+    ' <<<"$resolved"
+    echo ""
+    _ssh_menu_reach_cached "$host" "$tag" "$resolved"
+}
+
+function _ssh_menu_age {
+    local s=$1
+    if (( s < 60 )); then echo "${s}s"
+    elif (( s < 3600 )); then echo "$(( s / 60 ))m"
+    else echo "$(( s / 3600 ))h"
+    fi
+}
+
+# $1 host: drop cached results for every profile of that host
+function _ssh_menu_forget {
+    rm -f -- "$SSH_MENU_CACHE/$1__"*
+}
+
+# $1 host, $2 unlock marker: forget and re-probe now, so the list can be
+# reloaded with the fresh state immediately instead of on the next timer tick
+function _ssh_menu_reprobe {
+    _ssh_menu_forget "$1"
+    _ssh_menu_probe "$1" "" >/dev/null
+    [[ $2 == unlock ]] && _ssh_menu_probe "$1" luks >/dev/null
+    return 0
+}
+
+# $1 host, $2 tag, $3 ssh -G output: reachability line, served from cache while fresh
+function _ssh_menu_reach_cached {
+    local host=$1 tag=$2 resolved=$3 file age result
+    file="$SSH_MENU_CACHE/${host}__${tag:-default}"
+    if [[ -f $file ]]; then
+        age=$(( $(date +%s) - $(stat -c %Y "$file") ))
+        if (( age < SSH_MENU_CACHE_TTL )); then
+            printf '%s (cached %s ago, ctrl-r re-probes)\n' "$(<"$file")" "$(_ssh_menu_age "$age")"
+            return
+        fi
+    fi
+    result=$(_ssh_menu_reach "$host" "$tag" "$resolved")
+    printf '%s\n' "$result" > "$file"
+    printf '%s\n' "$result"
+}
+
+# $1 host, $2 tag, $3 ssh -G output: probe the endpoint, one line of result
+function _ssh_menu_reach {
+    local host=$1 tag=$2 resolved=$3 hostname port user proxycommand proxyjump banner
+    local hop hopuser hophost hopport hopresolved hopopts sshflags cmd
+    hostname=$(awk '$1 == "hostname" { print $2 }' <<<"$resolved")
+    port=$(awk '$1 == "port" { print $2 }' <<<"$resolved")
+    user=$(awk '$1 == "user" { print $2 }' <<<"$resolved")
+    proxycommand=$(awk '$1 == "proxycommand" { $1 = ""; sub(/^ /, ""); print }' <<<"$resolved")
+    proxyjump=$(awk '$1 == "proxyjump" && $2 != "none" { print $2 }' <<<"$resolved")
+
+    if [[ -n $proxyjump ]]; then
+        # the target is only reachable through the hop, and opening a forwarded
+        # channel needs an authenticated session there. if a ControlMaster to
+        # the hop is already alive we ride it (no auth, no agent); otherwise
+        # only the hop's own port is probed
+        hop=${proxyjump%%,*}
+        hopuser=""
+        [[ $hop == *@* ]] && hopuser=${hop%%@*}
+        hop=${hop##*@}
+        hopport=""
+        if [[ $hop == *:* ]]; then
+            hopport=${hop##*:}
+            hop=${hop%%:*}
+        fi
+        # the ControlPath hash covers user and port, so match the jump's exactly
+        hopopts=(${hopuser:+-l "$hopuser"} ${hopport:+-p "$hopport"})
+        if _ssh_menu_ssh -O check "${hopopts[@]}" -- "$hop" >/dev/null 2>&1; then
+            # timeout runs a binary, not a shell function, hence the explicit flags
+            mapfile -t sshflags < <(_ssh_menu_sshflags)
+            banner=$(timeout "$SSH_MENU_TIMEOUT" ssh "${sshflags[@]}" -o BatchMode=yes -o IdentityAgent=none -o ControlMaster=no \
+                "${hopopts[@]}" -W "$hostname:$port" -- "$hop" < <(sleep "$((SSH_MENU_TIMEOUT + 1))") 2>/dev/null | head -n1 | tr -d '\r')
+            if [[ $banner == SSH-* ]]; then
+                echo "reachable via $hop ($hostname:$port, $banner)"
+            else
+                echo "unreachable via $hop ($hostname:$port)"
+            fi
+        else
+            hopresolved=$(_ssh_menu_resolve "$hop" "")
+            hophost=$(awk '$1 == "hostname" { print $2 }' <<<"$hopresolved")
+            hopport=${hopport:-$(awk '$1 == "port" { print $2 }' <<<"$hopresolved")}
+            if banner=$(_ssh_menu_tcp_banner "$hophost" "$hopport"); then
+                echo "jump $hop reachable ($hophost:$hopport, $banner); target not probed: no master (ssh -O check ${hopopts[*]} $hop)"
+            else
+                echo "jump $hop unreachable ($hophost:$hopport)"
+            fi
+        fi
+    elif [[ -n $proxycommand ]]; then
+        # running an ssh-based proxy would authenticate to the hop through the agent
+        # matches "ssh", "/path/to/ssh", "sh -c 'ssh ..." but not "sshuttle" or "foo-ssh"
+        if [[ $proxycommand =~ (^|[^[:alnum:]_.-])ssh([[:space:]]|$) ]]; then
+            echo "proxycommand runs ssh; not probed (would need the agent)"
+        else
+                # ProxyCommand accepts exactly %%, %h, %n, %p and %r (ssh_config(5) TOKENS);
+                # %% first so it cannot form a token
+                cmd=${proxycommand//%%/$'\x01'}
+                cmd=${cmd//%h/$hostname}
+                cmd=${cmd//%p/$port}
+                cmd=${cmd//%r/$user}
+                cmd=${cmd//%n/$host}
+                cmd=${cmd//$'\x01'/%}
+                banner=$(_ssh_menu_proxy_banner "$cmd")
+                if [[ $banner == SSH-* ]]; then
+                    echo "reachable via proxycommand ($banner)"
+                else
+                    echo "unreachable via proxycommand"
+                fi
+        fi
+    elif banner=$(_ssh_menu_tcp_banner "$hostname" "$port"); then
+        echo "reachable ($hostname:$port, $banner)"
+    else
+        echo "unreachable ($hostname:$port)"
+    fi
+}
+
+# $1 file, $2 alias, $3 unlock marker
+function _ssh_menu_preview {
+    local file=$1 host=$2 marker=$3
+    _ssh_menu_block "$file" "$host"
+    echo ""
+    echo "--- ssh -G"
+    _ssh_menu_probe "$host" ""
+    if [[ $marker == unlock ]]; then
+        echo ""
+        echo "--- ssh -G -P luks"
+        _ssh_menu_probe "$host" luks
+    fi
+}
+
+export -f _ssh_menu_files _ssh_menu_hosts _ssh_menu_state _ssh_menu_with_state \
+    _ssh_menu_block _ssh_menu_tcp_banner _ssh_menu_proxy_banner _ssh_menu_sshflags _ssh_menu_ssh _ssh_menu_resolve \
+    _ssh_menu_age _ssh_menu_forget _ssh_menu_reprobe _ssh_menu_reach_cached _ssh_menu_reach _ssh_menu_probe _ssh_menu_preview
+
+# the state column is passive: it only reflects the cache, which the preview
+# fills as hosts are visited. a periodic reload keeps the column current; fzf
+# older than 0.73 lacks the every() event, so it is added only when supported
+function _ssh_menu_reload_opts {
+    # exit 0 = option accepted and matched; an unknown event exits 2
+    if printf 'x\n' | fzf --bind 'every(2):ignore' --filter x >/dev/null 2>&1; then
+        printf '%s\n' '--bind' 'every(2):reload-sync(_ssh_menu_hosts)' '--track' '--id-nth' '2'
+    fi
+}
+
+# prints "<host>" or "<host>\tluks"
 function _ssh_menu_select {
-    rg -N --no-heading '^Host .*' ~/.ssh \
-        | sed 's/Host \(.*\)/\1/' | sort \
-        | SHELL=$(which bash) fzf \
-            --delimiter ':' \
-            --with-nth 2 \
-            --preview "_ssh_menu_preview {1} {2}" \
-            --preview-label "ssh config info" \
-            --border-label "ssh-menu" \
-        | cut -d ":" -f2
+    local key host marker reload_opts=()
+    mapfile -t reload_opts < <(_ssh_menu_reload_opts)
+    {
+        read -r key
+        IFS=$'\t' read -r _ host _ _ marker
+    } < <(_ssh_menu_hosts \
+        | SHELL=$(command -v bash) fzf \
+            --delimiter $'\t' \
+            --with-nth 2..5 \
+            --nth 1,3 \
+            --tabstop 24 \
+            "${reload_opts[@]}" \
+            --expect ctrl-u \
+            --bind 'ctrl-r:execute-silent(_ssh_menu_reprobe {2} {5})+refresh-preview+reload-sync(_ssh_menu_hosts)' \
+            --header 'ENTER connect, CTRL-U unlock (luks), CTRL-R re-probe' \
+            --preview '_ssh_menu_preview {1} {2} {5}' \
+            --preview-label 'host' \
+            --border-label 'ssh-menu')
+
+    [[ -z $host ]] && return 0
+    if [[ $key == ctrl-u ]]; then
+        printf '%s\tluks\n' "$host"
+    else
+        printf '%s\n' "$host"
+    fi
 }
 
 case "${1:-}" in
     -s) _ssh_menu_select ;;
     *)
-        selected="$(_ssh_menu_select)"
-        [[ -n $selected ]] && ssh "$selected"
+        IFS=$'\t' read -r host profile < <(_ssh_menu_select)
+        [[ -z $host ]] && exit 0
+        if [[ $profile == luks ]]; then
+            exec ssh -P luks "$host"
+        else
+            exec ssh "$host"
+        fi
         ;;
 esac

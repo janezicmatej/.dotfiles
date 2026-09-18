@@ -1,24 +1,47 @@
 #!/usr/bin/env bash
 
-if [[ $# -eq 1 ]]; then
-    selected=$1
+# open (or switch to) a tmux session running ssh to a host
+#   tmux-ssher [host [luks]]
+
+if [[ $# -ge 1 ]]; then
+    host=$1
+    profile=${2:-}
 else
-    selected="$(~/.config/bin/ssh-menu -s)"
+    IFS=$'\t' read -r host profile < <(~/.config/bin/ssh-menu -s)
 fi
 
-if [[ -z $selected ]]; then
+if [[ -z $host ]]; then
     exit 0
 fi
 
-selected_name="ssh_$selected"
+# session names cannot contain . or :
+name=${host//[.:]/_}
 
-if [[ -z $TMUX ]] && ! tmux list-sessions 2>/dev/null; then
-    tmux new-session -s "$selected_name" ssh "$selected"
-    exit 0
+# an unlock session is short-lived and must not collide with a live ssh session
+if [[ $profile == luks ]]; then
+    session="unlock_$name"
+    args=(-P luks "$host")
+else
+    session="ssh_$name"
+    args=("$host")
 fi
 
-if ! tmux has-session -t="$selected_name" 2>/dev/null; then
-    tmux new-session -ds "$selected_name" ssh "$selected"
+# on failure keep the window until enter, so the error stays readable (e.g.
+# publickey denied because the yubikey is not inserted); tmux.conf's
+# detach-on-destroy then returns to the previous session. bash, not the tmux
+# default shell, so read -p behaves
+cmd="bash -c 'ssh \"\$@\" || { rc=\$?; echo; read -rp \"ssh exited \$rc, press enter to close \"; }' _$(printf ' %q' "${args[@]}")"
+
+if ! tmux has-session -t="$session" 2>/dev/null; then
+    tmux new-session -ds "$session" -n "$host" "$cmd"
+    # tmux.conf's c / " / % bindings read this to open more panes on the same host
+    if [[ $profile != luks ]]; then
+        tmux set-option -t "=$session:" @ssh_host "$host"
+    fi
 fi
 
-tmux switch-client -t "$selected_name"
+if [[ -z $TMUX ]]; then
+    tmux attach-session -t "=$session"
+else
+    tmux switch-client -t "=$session"
+fi
