@@ -26,6 +26,9 @@ export STARSHIP_CONFIG="$XDG_CONFIG_HOME/starship/config.toml"
 # claude
 export CLAUDE_CONFIG_DIR="$XDG_CONFIG_HOME/claude"
 
+# codex
+export CODEX_HOME="$XDG_CONFIG_HOME/codex"
+
 # cliphist
 export CLIPHIST_DB_PATH="/tmp/cliphist-db"
 
