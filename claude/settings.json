@@ -10,7 +10,18 @@
   "hooks": {},
   "statusLine": {
     "type": "command",
-    "command": "sh \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/statusline-command.sh\""
+    "command": "bash \"${CLAUDE_CONFIG_DIR:-$HOME/.claude}/statusline-command.sh\""
+  },
+  "enabledPlugins": {
+    "typesafe@typesafe-ai": true
+  },
+  "extraKnownMarketplaces": {
+    "typesafe-ai": {
+      "source": {
+        "source": "github",
+        "repo": "typesafe-ai/skills"
+      }
+    }
   },
   "effortLevel": "high",
   "tui": "default",
