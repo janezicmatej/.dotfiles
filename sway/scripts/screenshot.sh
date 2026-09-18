@@ -2,5 +2,5 @@
 
 # screenshot focused monitor with satty
 output=$(swaymsg -t get_outputs | jq -r '.[] | select(.focused) | .name')
-grim -o "$output" - | satty -f - --fullscreen --early-exit
+grim -o "$output" - | satty -f - --fullscreen --early-exit --copy-command wl-copy
 
