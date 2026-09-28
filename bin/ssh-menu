@@ -3,6 +3,7 @@
 # pick a host from ~/.ssh/config and every file it includes
 #   ssh-menu       connect to the selection
 #   ssh-menu -s    print the selection: "<host>" or "<host>\tluks" (ctrl-u)
+#   ssh-menu -h    show usage
 
 # exported: the preview and the list reload run in child shells spawned by fzf
 export SSH_MENU_CONFIG="${SSH_MENU_CONFIG:-$HOME/.ssh/config}"
@@ -16,6 +17,19 @@ export SSH_MENU_CACHE_TTL="${SSH_MENU_CACHE_TTL:-3600}"
 export SSH_MENU_TIMEOUT="${SSH_MENU_TIMEOUT:-1}"
 export SSH_MENU_PROXY_TIMEOUT="${SSH_MENU_PROXY_TIMEOUT:-3}"
 [[ -d $SSH_MENU_CACHE ]] || mkdir -m 700 "$SSH_MENU_CACHE"
+
+# fail early with one message instead of a cascade of command-not-found errors
+# from inside fzf's preview shells
+function _ssh_menu_require {
+    local cmd missing=()
+    for cmd in "$@"; do
+        command -v "$cmd" >/dev/null 2>&1 || missing+=("$cmd")
+    done
+    if (( ${#missing[@]} > 0 )); then
+        printf 'ssh-menu: missing required commands: %s\n' "${missing[*]}" >&2
+        exit 1
+    fi
+}
 
 # config plus every file named on Include lines; globs expanded, relative
 # paths resolved against ~/.ssh, unreadable files skipped
@@ -339,9 +353,26 @@ function _ssh_menu_select {
     fi
 }
 
+function _ssh_menu_usage {
+    cat <<'EOF'
+usage: ssh-menu [-s | -h]
+
+  (no args)  pick a host and ssh into it
+  -s         pick a host and print it ("<host>" or "<host>\tluks")
+  -h         show this help
+EOF
+}
+
 case "${1:-}" in
-    -s) _ssh_menu_select ;;
-    *)
+    -h | --help)
+        _ssh_menu_usage
+        ;;
+    -s)
+        _ssh_menu_require fzf ssh awk timeout
+        _ssh_menu_select
+        ;;
+    "")
+        _ssh_menu_require fzf ssh awk timeout
         IFS=$'\t' read -r host profile < <(_ssh_menu_select)
         [[ -z $host ]] && exit 0
         if [[ $profile == luks ]]; then
@@ -349,5 +380,10 @@ case "${1:-}" in
         else
             exec ssh "$host"
         fi
+        ;;
+    *)
+        printf 'ssh-menu: unknown argument: %s\n' "$1" >&2
+        _ssh_menu_usage >&2
+        exit 1
         ;;
 esac
