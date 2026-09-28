@@ -24,12 +24,15 @@
 ## Workflow
 - when redirected or interrupted, stop the current approach immediately and follow the new direction without explaining or defending it
 - focus on one goal per session; don't drift into unrelated improvements
+- implement changes directly; don't use sub-agents/Task for simple operations like renames, file moves, or single-file edits
+- use Task agents only for genuinely complex parallel exploration or research, not for straightforward implementation
 
 ## Comments
 - lowercase, no trailing punctuation
 - plain: `# descriptive but non-verbose comment`
 - keyword: `# KEYWORD:(@janezicmatej) descriptive but non-verbose comment`
 - keywords: WARN, FIX, NOTE, TODO, PERF, TEST, HACK
+- keyword comments must always include the `(@janezicmatej)` attribution
 
 ## Git
 - agents MUST commit with `--no-gpg-sign`
