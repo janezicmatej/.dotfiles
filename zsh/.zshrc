@@ -96,6 +96,9 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 eval "$(ggman shellrc)"
 eval "$(starship init zsh)"
 eval "$(direnv hook zsh)"
+# skip direnv in subshells; completion functions cd inside $(...) and trip chpwd
+_direnv_hook_toplevel() { (( ZSH_SUBSHELL )) || _direnv_hook }
+chpwd_functions=(${(u)chpwd_functions/#%_direnv_hook/_direnv_hook_toplevel})
 
 # gnupg
 export GPG_TTY=$(tty)
