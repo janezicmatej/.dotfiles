@@ -19,7 +19,7 @@ import html
 import re
 import subprocess
 import sys
-from datetime import date
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
 
@@ -351,6 +351,9 @@ def markdown(text: str, site: Site, at: str) -> str:
                 lists.append((indent, tag))
             else:
                 close_lists(indent)
+                # the other kind of list at the same indent ends this one and starts its own
+                if lists and lists[-1][0] == indent and lists[-1][1] != tag:
+                    close_lists(indent - 1)
                 if lists and lists[-1][0] == indent:
                     out.append("</li><li>")
                 else:
@@ -519,7 +522,7 @@ def write_index(notes: Path) -> None:
             f"<h1>{e(project)} notes</h1>",
             (
                 f"<p>{len(site.docs)} docs · {len(site.work)} in flight · "
-                f"{len(site.questions)} open questions · generated {date.today()}</p>"
+                f"{len(site.questions)} open questions · generated {datetime.now().astimezone().date()}</p>"
             ),
             "</header>",
             '<div class="index">',
@@ -628,7 +631,7 @@ def hub(projects: dict[str, Path]) -> str:
         )
     body = (
         '<header class="index-head"><h1>notes</h1>'
-        f"<p>{len(projects)} projects · generated {date.today()}</p></header>"
+        f"<p>{len(projects)} projects · generated {datetime.now().astimezone().date()}</p></header>"
         + (FILTER_BOX if rows else "")
         + '<div class="index"><h2>Projects</h2>'
         + (
