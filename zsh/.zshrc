@@ -91,6 +91,16 @@ fi
 zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 zstyle ':completion:*' menu select
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+# _git picks these up for the matching git aliases (git/config)
+_git-sign-branch() {
+    _arguments \
+        '(-n --dry-run)'{-n,--dry-run}'[list the commits that would be signed]' \
+        ':branch:__git_branch_names' \
+        ':upstream:__git_references'
+}
+_git-check-signed() {
+    _arguments ':commit range:__git_commit_ranges'
+}
 
 # tool hooks
 eval "$(ggman shellrc)"

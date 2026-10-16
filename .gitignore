@@ -100,6 +100,7 @@ sway/scripts/*
 !bin
 bin/*
 !bin/ssh-menu
+!bin/git-sign-branch
 
 # swaync
 !swaync
