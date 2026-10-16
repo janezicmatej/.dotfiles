@@ -36,6 +36,9 @@ git/*
 git/config.d/*
 !git/config.d/aflabs.conf
 !git/config.d/flare.conf
+!git/hooks
+git/hooks/*
+!git/hooks/merge-msg
 
 # ghostty
 !ghostty

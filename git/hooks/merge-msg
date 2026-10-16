@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# rewrite default merge subject to `merge: <branch with dashes as spaces>`
+
+msg_file="$1"
+source="$2"
+
+[[ "$source" == "merge" ]] || exit 0
+
+subject=$(head -n1 "$msg_file")
+
+if [[ "$subject" =~ ^Merge\ remote-tracking\ branch\ \'[^/]+/([^\']+)\' ]]; then
+	branch="${BASH_REMATCH[1]}"
+elif [[ "$subject" =~ ^Merge\ branch\ \'([^\']+)\' ]]; then
+	branch="${BASH_REMATCH[1]}"
+else
+	exit 0
+fi
+
+{
+	printf 'merge: %s\n' "${branch//-/ }"
+	tail -n +2 "$msg_file"
+} > "$msg_file.tmp" && mv "$msg_file.tmp" "$msg_file"

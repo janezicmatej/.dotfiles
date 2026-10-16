@@ -73,3 +73,7 @@
 
 [includeIf "gitdir:~/git/gitlab.com/flare-foundation/"]
 	path = ~/.config/git/config.d/flare.conf
+
+[hook "merge-msg"]
+	command = ~/.config/git/hooks/merge-msg
+	event = prepare-commit-msg
