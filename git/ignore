@@ -9,6 +9,7 @@
 # ai
 CLAUDE.local.md
 .claude
+.notes
 
 # languages
 .python-version
