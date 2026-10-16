@@ -7,6 +7,9 @@ alias n=nvim
 
 alias s="~/.config/bin/ssh-menu"
 
+# notes across ~/git and ~/.config, see claude/rules/notes.md
+alias notes='NOTES_ROOTS="$GGROOT:$HOME/.config" python3 ~/.config/claude/skills/notes/notes.py'
+
 # docker
 alias dp="docker ps --format 'table {{.Names}}\t{{.Ports}}'"
 alias dcp="docker compose ps --format 'table {{.Name}}\t{{.Ports}}'"

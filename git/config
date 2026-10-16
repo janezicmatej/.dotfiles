@@ -47,6 +47,10 @@
 
 [alias]
 	blame-ignore = "config blame.ignoreRevsFile .git-blame-ignore-revs"
+	# re-sign <upstream>..<branch> as the repo identity, keeping trees and merge topology
+	sign-branch = "!~/.config/bin/git-sign-branch --reset-author"
+	# list every commit in <range> without a good signature; exits 1 if any, git's status if the range is bad
+	check-signed = "!f() { log=$(git log --format='%G? %h %s' \"${1:-main..HEAD}\") || exit; bad=$(printf '%s\\n' \"$log\" | grep -v -e '^[GU] ' -e '^$'); [ -z \"$bad\" ] && echo 'all signed' || { printf '%s\\n' \"$bad\"; exit 1; }; }; f"
 
 [branch]
 	sort = -committerdate

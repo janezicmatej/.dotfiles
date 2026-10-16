@@ -1,0 +1,961 @@
+/*
+ * notes.css: the one stylesheet for every page in a project's .notes/
+ * notes.py copies it to .notes/notes.css; edit it here, in the notes skill, never in a project
+ *
+ * gruvbox material (sainnhe/gruvbox-material: medium contrast, material foreground), light or dark
+ * by the system scheme; jetbrains mono for all text
+ *
+ * page skeleton for a doc (docs/dNNN-slug.html; one level deeper for a folder doc):
+ *   <link rel="stylesheet" href="../notes.css">
+ *   <body><main class="page">
+ *     <nav class="back"><a href="../index.html">← notes</a></nav>
+ *     <header>
+ *       <p class="eyebrow">d007 · 2026-10-13</p>
+ *       <h1>Title</h1>
+ *       <p class="status current|stale|superseded">status: …</p>
+ *       <p class="lede">one or two sentences</p>
+ *     </header>
+ *     <section><h2>…</h2> …</section>
+ *   </main></body>
+ *
+ * components:
+ *   .callout (+ .good .warn .bad .info)        a boxed note, recommendation, open point
+ *   .tag (+ .good .warn .bad .info .muted)     a small inline label
+ *   .cards > .card (.card-id, strong, small)   a grid of linked or plain cards
+ *   .grid-2                                    two columns, one on a phone
+ *   .table > table                             a table that scrolls sideways when wide
+ *   figure.diagram > svg (+ figcaption)        an inline svg diagram, see "diagrams" below
+ *   dl.facts > dt + dd                         label and value pairs in two columns (repro, cause, fix)
+ *   pre.diff > span(.add .del)                 a unified diff, one span per line
+ *   .legend > span > svg + text                a row of notation keys above a diagram
+ *   .swatch (+ .info .good .warn .bad)         a small colour square that matches a diagram box
+ *   main.page.wide                             a wider page, for pages carried by wide diagrams
+ *   .sub, .muted                               secondary text
+ *   .fix                                       a line prefixed with an arrow
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
+
+:root {
+  color-scheme: light dark;
+  --radius: 0.375rem;
+
+  /* gruvbox material light */
+  --red: #c14a4a;
+  --orange: #c35e0a;
+  --yellow: #b47109;
+  --green: #6c782e;
+  --aqua: #4c7a5d;
+  --blue: #45707a;
+  --purple: #945e80;
+
+  --background: #fbf1c7;
+  --foreground: #654735;
+  --card: #f4e8be;
+  --muted: #eee0b7;
+  --muted-foreground: #7c6f64;
+  --border: #ddccab;
+  --input: #a89984;
+  --link: var(--blue);
+
+  /* text colours and their tints, both follow the scheme's palette */
+  --good: var(--green);
+  --warn: var(--yellow);
+  --bad: var(--red);
+  --info: var(--blue);
+  --good-bg: color-mix(in srgb, var(--green) 14%, transparent);
+  --warn-bg: color-mix(in srgb, var(--yellow) 16%, transparent);
+  --bad-bg: color-mix(in srgb, var(--red) 13%, transparent);
+  --info-bg: color-mix(in srgb, var(--blue) 13%, transparent);
+  --accent: var(--orange);
+  --accent-bg: color-mix(in srgb, var(--orange) 12%, transparent);
+
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* gruvbox material dark */
+    --red: #ea6962;
+    --orange: #e78a4e;
+    --yellow: #d8a657;
+    --green: #a9b665;
+    --aqua: #89b482;
+    --blue: #7daea3;
+    --purple: #d3869b;
+
+    --background: #282828;
+    --foreground: #d4be98;
+    --card: #32302f;
+    --muted: #45403d;
+    --muted-foreground: #a89984;
+    --border: #45403d;
+    --input: #5a524c;
+    --good-bg: color-mix(in srgb, var(--green) 16%, transparent);
+    --warn-bg: color-mix(in srgb, var(--yellow) 15%, transparent);
+    --bad-bg: color-mix(in srgb, var(--red) 16%, transparent);
+    --info-bg: color-mix(in srgb, var(--blue) 16%, transparent);
+    --accent-bg: color-mix(in srgb, var(--orange) 15%, transparent);
+  }
+}
+
+/* base */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  scrollbar-gutter: stable;
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font: 400 14px/1.65 var(--font-mono);
+  -webkit-font-smoothing: antialiased;
+}
+main.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px 96px;
+}
+main.page.wide {
+  max-width: 1240px;
+}
+a {
+  color: var(--link);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  line-height: 1.25;
+  text-wrap: balance;
+  margin: 0;
+}
+h1 {
+  font-size: 26px;
+}
+h2 {
+  font-size: 19px;
+  margin: 44px 0 12px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+h3 {
+  font-size: 16px;
+  margin: 28px 0 8px;
+}
+h4 {
+  font-size: 15px;
+  margin: 20px 0 6px;
+}
+section > h2:first-child {
+  margin-top: 40px;
+}
+p,
+ul,
+ol,
+blockquote,
+pre,
+figure,
+.table,
+.callout,
+.cards,
+.grid-2,
+details {
+  margin: 0 0 14px;
+}
+ul,
+ol {
+  padding-left: 22px;
+}
+li + li {
+  margin-top: 4px;
+}
+li > ul,
+li > ol {
+  margin: 4px 0 0;
+}
+strong,
+b {
+  font-weight: 600;
+}
+hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 32px 0;
+}
+blockquote {
+  padding: 2px 0 2px 16px;
+  border-left: 3px solid var(--border);
+  color: var(--muted-foreground);
+}
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+code,
+kbd,
+pre,
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.93em;
+}
+code {
+  background: var(--muted);
+  padding: 1px 5px;
+  border-radius: 4px;
+  overflow-wrap: break-word;
+}
+pre {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  overflow-x: auto;
+  line-height: 1.5;
+}
+pre code {
+  background: none;
+  padding: 0;
+  font-size: 1em;
+  overflow-wrap: normal;
+}
+
+/* page chrome */
+
+nav.back {
+  font-size: 13px;
+  margin-bottom: 28px;
+}
+nav.back a {
+  color: var(--muted-foreground);
+}
+nav.back a:hover {
+  color: var(--link);
+}
+header {
+  margin-bottom: 8px;
+}
+header > * + * {
+  margin-top: 10px;
+}
+.eyebrow {
+  font: 500 12px/1.4 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+.lede {
+  font-size: 17px;
+  line-height: 1.6;
+  margin-top: 14px;
+}
+.sub,
+.muted {
+  color: var(--muted-foreground);
+}
+p.status {
+  display: inline-block;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+p.status.current {
+  background: var(--good-bg);
+  color: var(--good);
+}
+p.status.stale {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.fix::before {
+  content: "→ ";
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* components */
+
+.callout {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--input);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+}
+.callout > :last-child {
+  margin-bottom: 0;
+}
+.callout.good {
+  background: var(--good-bg);
+  border-color: transparent;
+  border-left-color: var(--good);
+}
+.callout.warn {
+  background: var(--warn-bg);
+  border-color: transparent;
+  border-left-color: var(--warn);
+}
+.callout.bad {
+  background: var(--bad-bg);
+  border-color: transparent;
+  border-left-color: var(--bad);
+}
+.callout.info {
+  background: var(--info-bg);
+  border-color: transparent;
+  border-left-color: var(--info);
+}
+
+.tag {
+  display: inline-block;
+  font: 500 11px/1.5 var(--font-mono);
+  letter-spacing: 0.02em;
+  padding: 1px 8px;
+  border-radius: 99px;
+  white-space: nowrap;
+  vertical-align: 1px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.tag.good {
+  background: var(--good-bg);
+  color: var(--good);
+}
+.tag.warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+.tag.bad {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+.tag.info {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+.card {
+  display: block;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  color: var(--foreground);
+}
+a.card:hover {
+  border-color: var(--accent);
+  text-decoration: none;
+}
+.card-id {
+  display: block;
+  font: 500 12px/1.4 var(--font-mono);
+  color: var(--accent);
+}
+.card strong {
+  display: block;
+}
+.card small {
+  display: block;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+.card > :last-child {
+  margin-bottom: 0;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 720px) {
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.table {
+  overflow-x: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 14px;
+}
+th,
+td {
+  text-align: left;
+  vertical-align: top;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+}
+th {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+td > :last-child {
+  margin-bottom: 0;
+}
+td .tag {
+  white-space: normal;
+}
+td code {
+  overflow-wrap: anywhere;
+}
+
+details {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+}
+summary {
+  cursor: pointer;
+  font-weight: 500;
+}
+details[open] > summary {
+  margin-bottom: 8px;
+}
+
+dl.facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 16px;
+  margin: 0 0 14px;
+}
+dl.facts dt {
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+dl.facts dd {
+  margin: 0;
+}
+@media (max-width: 560px) {
+  dl.facts {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  dl.facts dd + dt {
+    margin-top: 8px;
+  }
+}
+
+/* one column as wide as the longest line, so every line's tint spans it when scrolled */
+pre.diff {
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr);
+}
+pre.diff span {
+  white-space: pre;
+}
+pre.diff .add {
+  background: var(--good-bg);
+  color: var(--good);
+}
+pre.diff .del {
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.legend > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.legend svg {
+  width: 34px;
+  height: 20px;
+  flex: none;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  border: 1px solid var(--muted-foreground);
+  background: var(--card);
+  vertical-align: 0;
+}
+.swatch.info {
+  background: color-mix(in srgb, var(--blue) 14%, var(--card));
+  border-color: var(--blue);
+}
+.swatch.good {
+  background: color-mix(in srgb, var(--green) 14%, var(--card));
+  border-color: var(--green);
+}
+.swatch.warn {
+  background: color-mix(in srgb, var(--yellow) 18%, var(--card));
+  border-color: var(--yellow);
+}
+.swatch.bad {
+  background: color-mix(in srgb, var(--red) 14%, var(--card));
+  border-color: var(--red);
+}
+
+/*
+ * diagrams: inline svg inside figure.diagram, drawn with these classes so both schemes work
+ *   <g class="node [accent|dashed|good|bad|warn]"><rect …/><text …>Label</text><text class="sub" …>detail</text></g>
+ *   <path class="edge [back|good|bad|warn]" … marker-end="url(#arrow)"/>
+ *   <path class="arrow [back|good|bad|warn]" d="M0 0 L10 5 L0 10 z"/>   inside a <marker>
+ *   <text class="edge-label [back|good|bad|warn]" …>label</text>
+ *   <rect class="group" …/> and <text class="group-label" …>   a dashed box around nodes
+ * for drawings with their own text placement (a data flow, a sequence), classes go on the shapes:
+ *   <rect class="box [info|good|warn|bad|accent] [strong] [dashed] [open]"/>   a step, process or entity
+ *   <rect class="zone [info|good|warn|bad|accent] [boundary]"/>   a tinted dashed area; boundary strokes it red
+ *   <rect class="panel"/>   a quiet solid area behind a group of boxes
+ *   <rect class="chip [good|accent]"/> + <text class="chip-text">   a small filled badge or numbered dot
+ *   <path class="line"/>  a plain stroke (a data store's rails)   <line class="rule"/>  a faint dashed guide
+ *   <rect class="fill"/>   a borderless card-coloured shape: a data store's body, a backdrop
+ *   <text class="title|sub|mono|heading [info|good|warn|bad]">   text roles; text-anchor stays an attribute
+ *   .edge.dashed   an answer or a nudge, not a main flow
+ *   figure.diagram.wide   svg at least 1000px wide, scrolls sideways on a phone
+ * an svg may also use currentColor and var(--good|--bad|--warn|--accent) in fill and stroke attributes
+ */
+figure {
+  margin-left: 0;
+  margin-right: 0;
+}
+figure.diagram {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px;
+  overflow-x: auto;
+  color: var(--foreground);
+}
+figure.diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 640px;
+  font-family: var(--font-mono);
+}
+figure.diagram.wide svg {
+  min-width: 1000px;
+}
+figure.diagram text {
+  fill: var(--foreground);
+}
+figcaption {
+  color: var(--muted-foreground);
+  font-size: 13px;
+  margin-top: 8px;
+}
+.node rect,
+.node circle,
+.node ellipse,
+.node polygon {
+  fill: var(--card);
+  stroke: var(--muted-foreground);
+  stroke-width: 1;
+}
+.node.accent rect,
+.node.accent circle,
+.node.accent polygon {
+  fill: var(--accent-bg);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+.node.dashed rect,
+.node.dashed circle,
+.node.dashed polygon {
+  stroke-dasharray: 5 4;
+}
+.node.good rect {
+  fill: var(--good-bg);
+  stroke: var(--good);
+}
+.node.bad rect {
+  fill: var(--bad-bg);
+  stroke: var(--bad);
+}
+.node.warn rect {
+  fill: var(--warn-bg);
+  stroke: var(--warn);
+}
+.node text {
+  fill: var(--foreground);
+  font: 500 14px var(--font-mono);
+  text-anchor: middle;
+}
+.node text.sub {
+  fill: var(--muted-foreground);
+  font: 400 11px var(--font-mono);
+}
+.edge {
+  fill: none;
+  stroke: var(--muted-foreground);
+  stroke-width: 1.4;
+}
+.arrow {
+  fill: var(--muted-foreground);
+}
+.edge-label {
+  fill: var(--muted-foreground);
+  font: 400 11px var(--font-mono);
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: var(--card);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.edge.back {
+  stroke: var(--accent);
+  stroke-dasharray: 5 4;
+}
+.arrow.back,
+.edge-label.back {
+  fill: var(--accent);
+}
+.edge.good {
+  stroke: var(--good);
+}
+.arrow.good,
+.edge-label.good {
+  fill: var(--good);
+}
+.edge.bad {
+  stroke: var(--bad);
+}
+.arrow.bad,
+.edge-label.bad {
+  fill: var(--bad);
+}
+.edge.warn {
+  stroke: var(--warn);
+}
+.arrow.warn,
+.edge-label.warn {
+  fill: var(--warn);
+}
+.group {
+  fill: none;
+  stroke: var(--muted-foreground);
+  stroke-opacity: 0.5;
+  stroke-dasharray: 5 3;
+}
+.group-label {
+  fill: var(--muted-foreground);
+  font: 500 11px var(--font-mono);
+}
+
+/* shapes with their own classes, for drawings that place their own text */
+
+svg .box {
+  fill: var(--card);
+  stroke: var(--muted-foreground);
+  stroke-width: 1.2;
+}
+svg .box.info {
+  fill: color-mix(in srgb, var(--blue) 14%, var(--card));
+  stroke: var(--blue);
+}
+svg .box.good {
+  fill: color-mix(in srgb, var(--green) 14%, var(--card));
+  stroke: var(--green);
+}
+svg .box.warn {
+  fill: color-mix(in srgb, var(--yellow) 18%, var(--card));
+  stroke: var(--yellow);
+}
+svg .box.bad {
+  fill: color-mix(in srgb, var(--red) 14%, var(--card));
+  stroke: var(--red);
+}
+svg .box.accent {
+  fill: color-mix(in srgb, var(--orange) 14%, var(--card));
+  stroke: var(--orange);
+}
+svg .box.strong {
+  stroke: var(--foreground);
+  stroke-width: 1.6;
+}
+svg .box.dashed,
+svg .edge.dashed {
+  stroke-dasharray: 5 4;
+}
+svg .box.open {
+  fill: none;
+}
+svg .zone {
+  fill: color-mix(in srgb, var(--muted-foreground) 6%, transparent);
+  stroke: var(--muted-foreground);
+  stroke-width: 1.5;
+  stroke-dasharray: 7 5;
+}
+svg .zone.info {
+  fill: color-mix(in srgb, var(--blue) 7%, transparent);
+}
+svg .zone.good {
+  fill: color-mix(in srgb, var(--green) 7%, transparent);
+}
+svg .zone.warn {
+  fill: color-mix(in srgb, var(--yellow) 9%, transparent);
+}
+svg .zone.bad {
+  fill: color-mix(in srgb, var(--red) 6%, transparent);
+}
+svg .zone.accent {
+  fill: color-mix(in srgb, var(--orange) 7%, transparent);
+}
+svg .zone.boundary {
+  stroke: var(--red);
+}
+svg .panel {
+  fill: color-mix(in srgb, var(--foreground) 4%, transparent);
+  stroke: var(--border);
+}
+svg .chip {
+  fill: var(--blue);
+}
+svg .chip.good {
+  fill: var(--green);
+}
+svg .chip.accent {
+  fill: var(--orange);
+}
+svg text.chip-text {
+  fill: var(--background);
+  font: 700 10px var(--font-mono);
+}
+svg .fill {
+  fill: var(--card);
+  stroke: none;
+}
+svg .line {
+  fill: none;
+  stroke: var(--foreground);
+  stroke-width: 1.6;
+}
+svg .rule {
+  stroke: var(--border);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 5;
+}
+svg text.title {
+  fill: var(--foreground);
+  font: 600 13px var(--font-mono);
+}
+svg text.sub {
+  fill: var(--muted-foreground);
+  font: 400 11px var(--font-mono);
+}
+svg text.mono {
+  fill: var(--muted-foreground);
+  font: 400 10.5px var(--font-mono);
+}
+svg text.heading {
+  fill: var(--muted-foreground);
+  font: 600 11px var(--font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+svg text.info {
+  fill: var(--info);
+}
+svg text.good {
+  fill: var(--good);
+}
+svg text.warn {
+  fill: var(--warn);
+}
+svg text.bad {
+  fill: var(--bad);
+}
+
+/* index */
+
+.index-head h1 {
+  font-size: 26px;
+}
+.index-head p {
+  margin: 4px 0 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+}
+.index h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin: 36px 0 6px;
+  padding: 0;
+  border: 0;
+}
+.index h2 .count {
+  font: 500 12px var(--font-mono);
+  letter-spacing: 0;
+}
+.rows {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.rows li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 9px 14px;
+  margin: 0;
+}
+.rows li + li {
+  border-top: 1px solid var(--border);
+}
+.rows .id {
+  font: 500 12px var(--font-mono);
+  color: var(--muted-foreground);
+}
+.rows .meta {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+.rows .title.superseded a {
+  color: var(--muted-foreground);
+}
+.rows.plain li {
+  grid-template-columns: minmax(0, 1fr);
+}
+.empty {
+  color: var(--muted-foreground);
+  font-size: 13px;
+  margin: 0;
+}
+@media (max-width: 560px) {
+  .rows li {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+  .rows .meta {
+    grid-column: 2;
+  }
+}
+
+/* a page rendered from markdown */
+
+.md-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin: 12px 0 0;
+}
+.md-meta dt {
+  display: inline;
+  font-weight: 500;
+}
+.md-meta dd {
+  display: inline;
+  margin: 0 0 0 4px;
+}
+.md-meta div {
+  min-width: 0;
+}
+.files {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 32px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* serve's hub: one row per project */
+
+.rows.hub li {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+@media (max-width: 560px) {
+  .rows.hub li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rows.hub .meta {
+    grid-column: 1;
+  }
+}
+
+/* serve's search */
+
+form.search,
+input.filter {
+  margin: 24px 0 0;
+}
+form.search input,
+input.filter {
+  width: 100%;
+  font: inherit;
+  color: var(--foreground);
+  background: var(--card);
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  padding: 9px 14px;
+}
+form.search input:focus,
+input.filter:focus {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+.rows.results li {
+  grid-template-columns: 52px minmax(0, 1fr);
+}
+.rows.results .meta {
+  display: none;
+}
+.snippet {
+  display: block;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 2px;
+}
+mark {
+  background: var(--warn-bg);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 2px;
+}

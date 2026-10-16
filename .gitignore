@@ -100,6 +100,7 @@ sway/scripts/*
 !bin
 bin/*
 !bin/ssh-menu
+!bin/git-sign-branch
 
 # swaync
 !swaync
@@ -124,3 +125,12 @@ claude/*
 !claude/settings.json
 !claude/statusline-command.sh
 !claude/rules
+!claude/agents
+!claude/skills
+claude/skills/*
+!claude/skills/matej
+!claude/skills/notes
+claude/skills/notes/*
+!claude/skills/notes/SKILL.md
+!claude/skills/notes/notes.css
+!claude/skills/notes/notes.py
