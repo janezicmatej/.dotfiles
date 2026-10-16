@@ -249,6 +249,41 @@ def inline_plain(text: str, site: Site, at: str) -> str:
     return re.sub(r"\x00(\d+)\x00", lambda m: links[int(m[1])], text)
 
 
+# gfm pipe tables: a header row, a row of dashes, then body rows up to a line without a pipe
+PIPE = re.compile(r"(?<!\\)\|")
+SEPARATOR_CELL = re.compile(r"^:?-+:?$")
+ALIGN = {(True, True): "center", (False, True): "right", (True, False): "left"}
+
+
+def table_cells(line: str) -> list[str]:
+    s = line.strip()
+    s = s.removeprefix("|")
+    s = s[:-1] if s.endswith("|") and not s.endswith("\\|") else s
+    return [c.strip().replace("\\|", "|") for c in PIPE.split(s)]
+
+
+def table_start(lines: list[str], i: int) -> list[str] | None:
+    """the column alignments if a table starts at lines[i], else None"""
+    if i + 1 >= len(lines) or not (PIPE.search(lines[i]) and PIPE.search(lines[i + 1])):
+        return None
+    seps = table_cells(lines[i + 1])
+    if len(table_cells(lines[i])) != len(seps):
+        return None
+    if not all(SEPARATOR_CELL.match(c) for c in seps):
+        return None
+    return [ALIGN.get((c[0] == ":", c[-1] == ":"), "") for c in seps]
+
+
+def table_row(line: str, aligns: list[str], tag: str, site: Site, at: str) -> str:
+    # short rows are padded, extra cells dropped, as gfm does
+    cells = (table_cells(line) + [""] * len(aligns))[: len(aligns)]
+    row = []
+    for cell, align in zip(cells, aligns):
+        style = f' style="text-align: {align}"' if align else ""
+        row.append(f"<{tag}{style}>{inline(cell, site, at)}</{tag}>")
+    return f"<tr>{''.join(row)}</tr>"
+
+
 def markdown(text: str, site: Site, at: str) -> str:
     lines = text.splitlines()
     out: list[str] = []
@@ -294,6 +329,20 @@ def markdown(text: str, site: Site, at: str) -> str:
             out.append(f"<h{level}>{inline(m[2], site, at)}</h{level}>")
             i += 1
             continue
+        if aligns := table_start(lines, i):
+            flush_para()
+            close_lists()
+            head = table_row(line, aligns, "th", site, at)
+            i += 2
+            body = []
+            while i < len(lines) and PIPE.search(lines[i]):
+                body.append(table_row(lines[i], aligns, "td", site, at))
+                i += 1
+            tbody = f"<tbody>{''.join(body)}</tbody>" if body else ""
+            out.append(
+                f'<div class="table"><table><thead>{head}</thead>{tbody}</table></div>'
+            )
+            continue
         if m := re.match(r"^(\s*)([-*]|\d+\.)\s+(.*)$", line):
             flush_para()
             indent, tag = len(m[1]), "ol" if m[2][0].isdigit() else "ul"
@@ -314,6 +363,7 @@ def markdown(text: str, site: Site, at: str) -> str:
                 i < len(lines)
                 and lines[i].strip()
                 and not re.match(r"^\s*([-*]|\d+\.)\s+|^\s*```|^#{1,4}\s", lines[i])
+                and not table_start(lines, i)
             ):
                 item.append(lines[i].strip())
                 i += 1
