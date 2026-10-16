@@ -548,7 +548,10 @@ def find_notes(roots: list[Path], depth: int = 6) -> dict[str, Path]:
     def walk(d: Path, root: Path, left: int) -> None:
         notes = d / ".notes"
         if notes.is_dir() and (notes / "docs").is_dir():
-            found[d.relative_to(root).as_posix() or d.name] = notes
+            # a root that is itself a project goes by its name, not "."
+            found[d.name if d == root else d.relative_to(root).as_posix()] = notes
+            # a project's subdirectories are its code, even when the project is a root
+            return
         # a repo's own subdirectories are its code, not more projects
         if left == 0 or ((d / ".git").exists() and d != root):
             return
