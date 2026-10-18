@@ -1,11 +1,11 @@
 # Global CLAUDE.md
 
 ## Output format
-- for plans, reports, design docs, and anything benefiting from diagrams, styling, or embedded images, prefer HTML over Markdown
+- for plans, reports, design docs, and anything benefiting from diagrams, styling, or embedded images, prefer HTML over Markdown, except in `.notes/` (the `lead` skill's notes.md says when)
 - for conventional files (README, CONTRIBUTING, LICENSE, CHANGELOG, etc.) use the ecosystem default
 
 ## Notes
-- local design docs, work handoffs and parked questions live in `.notes/` per project (see ~/.config/claude/rules/notes.md)
+- never stage `.notes/` from the project repo; the `lead` skill's notes.md has the rest
 
 ## Diagnostics
 - IMPORTANT: find the root cause before proposing a fix; never present a workaround as a fix (see ~/.config/claude/rules/diagnostics.md)
@@ -21,7 +21,7 @@
 
 ## Scope
 - don't start unrelated work on your own; if a diff grows beyond the request, stop and confirm
-- in orchestrated work (the `matej` skill), an agent working from a brief stays inside the brief instead: it notes anything outside it as a leftover and keeps going
+- in orchestrated work (the `lead` skill), an agent working from a brief stays inside the brief instead: it notes anything outside it as a leftover and keeps going
 
 ## Comments
 - lowercase, no trailing punctuation

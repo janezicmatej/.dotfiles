@@ -1,6 +1,6 @@
 /*
  * notes.css: the one stylesheet for every page in a project's .notes/
- * notes.py copies it to .notes/notes.css; edit it here, in the notes skill, never in a project
+ * notes.py copies it to .notes/notes.css; edit it here, in the lead skill, never in a project
  *
  * gruvbox material (sainnhe/gruvbox-material: medium contrast, material foreground), light or dark
  * by the system scheme; jetbrains mono for all text
@@ -21,8 +21,8 @@
  * components:
  *   .callout (+ .good .warn .bad .info)        a boxed note, recommendation, open point
  *   .tag (+ .good .warn .bad .info .muted)     a small inline label
- *   .cards > .card (.card-id, strong, small)   a grid of linked or plain cards
- *   .grid-2                                    two columns, one on a phone
+ *   .decide > .option(.recommended .chosen)    two options left and right, one column on a phone;
+ *                                              a markdown ```decide block renders it, see the skill
  *   .table > table                             a table that scrolls sideways when wide
  *   figure.diagram > svg (+ figcaption)        an inline svg diagram, see "diagrams" below
  *   dl.facts > dt + dd                         label and value pairs in two columns (repro, cause, fix)
@@ -175,8 +175,7 @@ pre,
 figure,
 .table,
 .callout,
-.cards,
-.grid-2,
+.decide,
 details {
   margin: 0 0 14px;
 }
@@ -357,49 +356,63 @@ p.status.stale {
   color: var(--info);
 }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 10px;
-}
-.card {
-  display: block;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px 14px;
-  color: var(--foreground);
-}
-a.card:hover {
-  border-color: var(--accent);
-  text-decoration: none;
-}
-.card-id {
-  display: block;
-  font: 500 12px/1.4 var(--font-mono);
-  color: var(--accent);
-}
-.card strong {
-  display: block;
-}
-.card small {
-  display: block;
-  color: var(--muted-foreground);
-  font-size: 13px;
-}
-.card > :last-child {
-  margin-bottom: 0;
-}
-
-.grid-2 {
+/* two options side by side, the only side by side a page has */
+.decide {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 @media (max-width: 720px) {
-  .grid-2 {
-    grid-template-columns: 1fr;
+  .decide {
+    grid-template-columns: minmax(0, 1fr);
   }
+}
+.decide + .decide-paste {
+  margin-top: -6px;
+  font-size: 13px;
+}
+.option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+.option.recommended {
+  border-color: var(--good);
+}
+.option.chosen {
+  border-color: var(--info);
+  box-shadow: inset 3px 0 0 var(--info);
+}
+.option > p,
+.option > ul {
+  margin-bottom: 8px;
+}
+.option > :last-child {
+  margin-bottom: 0;
+}
+.option-head .tag {
+  margin-left: 6px;
+}
+.option button {
+  margin-top: auto;
+  font: 500 13px/1.4 var(--font-mono);
+  color: var(--foreground);
+  background: var(--muted);
+  border: 1px solid var(--input);
+  border-radius: var(--radius);
+  padding: 5px 12px;
+  cursor: pointer;
+}
+.option button:hover {
+  border-color: var(--accent);
+}
+.option button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
 
 .table {
@@ -857,12 +870,6 @@ svg text.bad {
   color: var(--muted-foreground);
   white-space: nowrap;
 }
-.rows .title.superseded a {
-  color: var(--muted-foreground);
-}
-.rows.plain li {
-  grid-template-columns: minmax(0, 1fr);
-}
 .empty {
   color: var(--muted-foreground);
   font-size: 13px;
@@ -958,4 +965,16 @@ mark {
   color: inherit;
   border-radius: 3px;
   padding: 0 2px;
+}
+
+/* a work item: its move line under the title in the index, the move box on top of its page */
+.rows .title .move {
+  display: block;
+  margin-top: 2px;
+}
+.callout.move h2 {
+  font-size: 16px;
+  margin: 0 0 8px;
+  padding-top: 0;
+  border-top: 0;
 }
