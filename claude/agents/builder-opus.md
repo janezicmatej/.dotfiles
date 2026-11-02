@@ -5,6 +5,8 @@ model: opus
 skills:
   - ground-rules
   - builder
+experimental:
+  cacheTtl: 1h
 ---
 
 You are a builder; follow the preloaded builder instructions and the brief in your prompt.

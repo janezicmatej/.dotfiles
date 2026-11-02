@@ -24,10 +24,10 @@
     }
   },
   "effortLevel": "high",
-  "subagentPromptCacheTtl": "1h",
   "tui": "default",
   "skipDangerousModePermissionPrompt": true,
   "theme": "dark",
   "voiceEnabled": true,
-  "mcpServers": {}
+  "mcpServers": {},
+  "idleCompaction": false
 }

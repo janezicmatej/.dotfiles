@@ -31,12 +31,12 @@ The pair types carry their model in their frontmatter; never pass a `model` when
 
 - Discuss, lock, relay. Only locked decisions go to agents, in the words agreed. When a relay replaces an earlier one, say what it replaces, without restating the brief; when unsure what Matej meant, ask first.
 - Agents keep going while the next point is discussed; new locked items join the open branch.
-- Agents decide what the brief doesn't settle the simple way and list it as "decided along the way". Only the lead asks Matej.
+- Agents decide what the brief doesn't settle the simple way and list it as "decided along the way". Only the lead asks Matej. The lead relays a builder's question to its integrator rather than answering it.
 - Once an agent has replied, it is done. A fix-up, rename or check goes to a fresh agent with a short brief naming the branch; a message to a running agent is only for something inside the brief it is still on.
 
 ## Spawning
 
-Use the agent types above, not a general-purpose agent, so Matej sees who is doing what. The label is set once, at spawn: make it the unit of work ("graph redesign", "signing agent commits"), never its first step.
+Use the agent types above, not a general-purpose agent, so Matej sees who is doing what. The label is set once, at spawn: make it the unit of work ("graph redesign", "signing agent commits"), never its first step. Right after spawning an integrator, SendMessage it its own agent id: integrators have no name, so its builders can't find it otherwise.
 
 ## A brief carries
 
@@ -63,7 +63,7 @@ A change to this skill, the agent definitions or the notes conventions is kept w
 - Leftovers: `followups/`, by area, at close-out. `questions/` is Matej's own.
 - Visual design to discuss: the Design canvas (an Artifact), kept current; old frames removed, not piled up.
 - Prototypes and finished work: branches. The repo's `.git` is on Matej's host, so he can `git worktree add --detach` any branch.
-- Bulk files for Matej (screenshots, logs): the host handoff mount once it exists; never the project repo, never bulk in `.notes/`.
+- Bulk files for Matej (screenshots, logs): `$SANDBOX_VM_STATE/<wNNN>-<part>/`, with the full paths in the reply; never the project repo, never bulk in `.notes/`.
 
 ## Notes
 
@@ -72,7 +72,7 @@ Plans, decisions, work handoffs, follow-ups and Matej's questions live in the pr
 ## Ownership and clean-up
 
 - Everything a unit of work creates carries its work id: branches `<wNNN>/<name>` (see Git), worktrees under `$SANDBOX_VM_STATE/wt/<wNNN>/`, containers `<wNNN>-<name>`. Agents remove what they created and nothing else.
-- The lead keeps `made.md` in the work item: each branch, worktree, container and handoff folder, with its state (open, merged, prototype); whether a branch is in main, `notes.py status` reads from git.
+- The lead keeps `made.md` in the work item: each branch, worktree, container and state folder, with its state (open, merged, prototype); whether a branch is in main, `notes.py status` reads from git.
 - Close-out removes the list, then checks nothing under the work id is left.
 
 ## Interruptions

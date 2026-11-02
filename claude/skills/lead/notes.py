@@ -1034,7 +1034,26 @@ def file_reply(notes: Path, work: str, part: str, ref: str, checked: str) -> Non
 # serve: every project's notes on one port
 
 
-SKIP_DIRS = {"node_modules", "target", "dist", "build", "vendor", "__pycache__"}
+SKIP_DIRS = {
+    "node_modules",
+    "target",
+    "dist",
+    "build",
+    "vendor",
+    "__pycache__",
+    "cache",
+}
+# browser profiles under ~/.config: thousands of directories, never a project
+SKIP_PATHS = {"config/chromium", "config/google-chrome", "config/BraveSoftware"}
+
+
+def is_claude_config(d: Path) -> bool:
+    """claude code's config dir: its subdirectories are transcripts, sessions and skills"""
+    return (
+        d.name.lstrip(".") == "claude"
+        and (d / "settings.json").is_file()
+        and (d / "projects").is_dir()
+    )
 
 
 def find_notes(roots: list[Path], depth: int = 6) -> dict[str, Path]:
@@ -1049,14 +1068,18 @@ def find_notes(roots: list[Path], depth: int = 6) -> dict[str, Path]:
             # a project's subdirectories are its code, even when the project is a root
             return
         # a repo's own subdirectories are its code, not more projects
-        if left == 0 or ((d / ".git").exists() and d != root):
+        if left == 0 or ((d / ".git").exists() and d != root) or is_claude_config(d):
             return
         try:
             children = sorted(d.iterdir())
         except OSError:
             return
         for c in children:
-            skip = c.name.startswith(".") or c.name in SKIP_DIRS
+            skip = (
+                c.name.startswith(".")
+                or c.name in SKIP_DIRS
+                or f"{d.name.lstrip('.')}/{c.name}" in SKIP_PATHS
+            )
             if c.is_dir() and not c.is_symlink() and not skip:
                 walk(c, root, left - 1)
 
@@ -1298,8 +1321,10 @@ def serve(roots: list[Path], host: str, port: int) -> None:
                 page = (notes / "index.html").read_text()
                 page = page.replace("</header>", "</header>" + search_form("search"), 1)
                 return self.send_text(page, "text/html; charset=utf-8")
+            # self.path stays the full request path, so the base class's redirect of a
+            # directory without its trailing slash keeps the project prefix
             self.serve_from = notes
-            self.path = "/" + rest
+            self.serve_prefix = prefix
             return super().do_GET()
 
         def do_POST(self) -> None:
@@ -1351,7 +1376,8 @@ def serve(roots: list[Path], host: str, port: int) -> None:
 
         def translate_path(self, path: str) -> str:
             base = self.serve_from.resolve()
-            target = (base / unquote(urlsplit(path).path).lstrip("/")).resolve()
+            rest = unquote(urlsplit(path).path)[len(self.serve_prefix) + 1 :]
+            target = (base / rest.lstrip("/")).resolve()
             return str(target if target.is_relative_to(base) else base / "__outside__")
 
         def log_message(self, format: str, *args) -> None:

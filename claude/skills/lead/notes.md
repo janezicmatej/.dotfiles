@@ -97,7 +97,7 @@ Settling: check the repo first, fold the outcome into a doc or work item if wort
 
 ## Other
 
-`other/out/` holds documents for someone else, written for that reader, and the few small files that go with them; no ids, no status line. HTML there follows the doc skeleton with `../../notes.css`; the eyebrow names the reader and date (`for the team · 2026-10-14`). What gets sent is the generated `_out/<file>`; look at it before handing it over, link it from the work item's `## Your move` (the index doesn't list `other/`), then `commit "other: <file>"`. Bulk output for a person (screenshots, builds, logs) goes to the host handoff mount, not `.notes/`.
+`other/out/` holds documents for someone else, written for that reader, and the few small files that go with them; no ids, no status line. HTML there follows the doc skeleton with `../../notes.css`; the eyebrow names the reader and date (`for the team · 2026-10-14`). What gets sent is the generated `_out/<file>`; look at it before handing it over, link it from the work item's `## Your move` (the index doesn't list `other/`), then `commit "other: <file>"`. Bulk output for a person (screenshots, builds, logs) stays in `$SANDBOX_VM_STATE`, named by full path, not `.notes/`.
 
 ## Never
 
